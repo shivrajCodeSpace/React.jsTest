@@ -1,20 +1,17 @@
-import { useNavigate } from "react-router-dom";
-import "./stylingPages/Splash.css";
-import Loginimg from "../assets/Loginimg.jpeg";
-// import dashboardImg from "./assets/dashboard.png";
-import image from "../assets/logo.png";
-export default function SplashScreen() {
-  const navigate = useNavigate();
+import "./Splash.css";
+import web_login from "./assets/web_login.png";
+import BrandHeader from "./components/BrandHeader";
+import "./Dashboard.css"
+export default function SplashScreen({ onNavigate }) {
 
   return (
     <div className="splash-container">
       
       {/* Navbar */}
       <div className="navbar">
-        <div className="logo">
-          <img src={image.jpeg} alt="Logo" />
+        <div className="navbar-left">
+          <BrandHeader showTagline={false} />
         </div>
-        <h2 className="brand">DoorMeds</h2>
         <div className="nav-links">
           <span>About</span>
           <span>Service</span>
@@ -40,16 +37,16 @@ export default function SplashScreen() {
           </p>
 
           <div className="hero-buttons">
-            <button onClick={() => navigate("/authpage")} className="login-btn">
+            <button onClick={() => onNavigate("Auth")} className="login-btn">
               Login
             </button>
-            <span className="register">Register Now ?</span>
+            <span className="register" onClick={() => onNavigate("Auth")}>Register Now ?</span>
           </div>
         </div>
 
         {/* Right Image */}
         <div className="hero-right">
-          <img src={Logo} alt="dashboard" />
+          <img src={web_login} alt="dashboard" />
         </div>
 
       </div>

@@ -70,146 +70,144 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="prof-root">
-      <header className="prof-header">
-        <div className="prof-brand">
-          {/* <div className="prof-logo">
-            <img src={Logo} alt="DoorMeds Logo" />
-          </div> */}
-          <h2 className="prof-title">Profile</h2>
+    <div className="profile-page">
+      <div className="profile-page-header">
+        <div>
+          <h1>Profile</h1>
+          <p className="profile-subtitle">Review and update your account details, security settings, and profile information.</p>
         </div>
 
-        <div className="prof-actions">
+        <div className="profile-page-actions">
           <button className="prof-btn" onClick={() => setEditing((s) => !s)}>{editing ? "Cancel" : "Edit Profile"}</button>
           <button className="prof-btn primary" onClick={saveProfile}>Save</button>
         </div>
-      </header>
+      </div>
 
-      <main className="prof-main">
-        <div className="card profile-card unified-card">
-          <div className="profile-top">
+      <div className="profile-grid">
+        <aside className="profile-summary card">
+          <div className="profile-summary-top">
             <div className="avatar-wrap">
               {avatar ? (
                 <img src={avatar} alt="avatar" className="avatar-img" />
               ) : (
                 <div className="avatar-fallback">{profile.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}</div>
               )}
-              <label className="avatar-upload">
-                <input type="file" accept="image/*" onChange={handleAvatarChange} />
-                Upload
-              </label>
             </div>
-
             <div className="profile-meta">
               <div className="profile-name">{profile.name}</div>
               <div className="profile-role">{profile.role}</div>
-              <div className="profile-location muted">{profile.location}</div>
+              <div className="profile-location">{profile.location}</div>
             </div>
           </div>
 
-          <div className="profile-body">
-            <div className="field">
-              <label>Name</label>
-              <input name="name" value={profile.name} onChange={handleProfileChange} disabled={!editing} />
+          <div className="profile-summary-body">
+            <button className="avatar-upload">
+              <input type="file" accept="image/*" onChange={handleAvatarChange} />
+              Upload photo
+            </button>
+            <div className="profile-stats">
+              <div>
+                <span>32</span>
+                <p>Opportunities applied</p>
+              </div>
+              <div>
+                <span>26</span>
+                <p>Opportunities won</p>
+              </div>
+              <div>
+                <span>6</span>
+                <p>Current opportunities</p>
+              </div>
             </div>
-
-            <div className="field">
-              <label>Email</label>
-              <input name="email" value={profile.email} onChange={handleProfileChange} disabled={!editing} />
-            </div>
-
-            <div className="field">
-              <label>Phone</label>
-              <input name="phone" value={profile.phone} onChange={handleProfileChange} disabled={!editing} />
-            </div>
-
-            <div className="field">
-              <label>Bio</label>
-              <textarea name="bio" value={profile.bio} onChange={handleProfileChange} disabled={!editing} />
-            </div>
-          </div>
-
-          <div className="profile-section">
-            <h4>Security</h4>
-            <div className="field">
-              <label>Current password</label>
-              <input type="password" name="current" value={passwords.current} onChange={handlePasswordChange} placeholder="••••••" />
-            </div>
-            <div className="field">
-              <label>New password</label>
-              <input type="password" name="newPass" value={passwords.newPass} onChange={handlePasswordChange} placeholder="New password" />
-            </div>
-            <div className="field">
-              <label>Confirm new password</label>
-              <input type="password" name="confirm" value={passwords.confirm} onChange={handlePasswordChange} placeholder="Confirm new password" />
-            </div>
-            <div className="security-actions">
-              <button className="prof-btn" onClick={() => setPasswords({ current: "", newPass: "", confirm: "" })}>Clear</button>
-              <button className="prof-btn primary" onClick={updatePassword}>Update Password</button>
+            <div className="profile-summary-footer">
+              <button className="link-btn">View Public Profile</button>
+              <div className="profile-url">https://door.../pritam</div>
             </div>
           </div>
+        </aside>
 
-          <div className="profile-section">
-            <h4>Notifications</h4>
-            <div className="toggle-row">
-              <label>Order updates</label>
-              <input type="checkbox" checked={notifications.orders} onChange={() => toggleNotification("orders")} />
+        <div className="profile-main-panel">
+          <section className="profile-panel card">
+            <div className="profile-panel-tabs">
+              <button className="tab active">Account Settings</button>
+              <button className="tab">Company Settings</button>
+              <button className="tab">Documents</button>
+              <button className="tab">Billing</button>
+              <button className="tab">Notifications</button>
             </div>
-            <div className="toggle-row">
-              <label>Inventory alerts</label>
-              <input type="checkbox" checked={notifications.inventory} onChange={() => toggleNotification("inventory")} />
-            </div>
-            <div className="toggle-row">
-              <label>Promotions</label>
-              <input type="checkbox" checked={notifications.promotions} onChange={() => toggleNotification("promotions")} />
-            </div>
-            <div className="toggle-row">
-              <label>Support messages</label>
-              <input type="checkbox" checked={notifications.support} onChange={() => toggleNotification("support")} />
-            </div>
-          </div>
 
-          <div className="profile-section">
-            <h4>Privacy & Preferences</h4>
-            <div className="toggle-row">
-              <label>Two factor authentication</label>
-              <input type="checkbox" checked={privacy.twoFactor} onChange={() => togglePrivacy("twoFactor")} />
+            <div className="profile-form-grid">
+              <div className="field">
+                <label>First Name</label>
+                <input name="name" value={profile.name.split(" ")[0]} onChange={handleProfileChange} disabled={!editing} />
+              </div>
+              <div className="field">
+                <label>Last Name</label>
+                <input name="lastName" value={profile.name.split(" ")[1] || ""} onChange={handleProfileChange} disabled={!editing} />
+              </div>
+              <div className="field">
+                <label>Phone Number</label>
+                <input name="phone" value={profile.phone} onChange={handleProfileChange} disabled={!editing} />
+              </div>
+              <div className="field">
+                <label>Email address</label>
+                <input name="email" value={profile.email} onChange={handleProfileChange} disabled={!editing} />
+              </div>
+              <div className="field">
+                <label>City</label>
+                <input name="city" value={profile.city || "Agartala"} onChange={handleProfileChange} disabled={!editing} />
+              </div>
+              <div className="field">
+                <label>State / County</label>
+                <input name="state" value={profile.state || "Tripura"} onChange={handleProfileChange} disabled={!editing} />
+              </div>
+              <div className="field">
+                <label>Postcode</label>
+                <input name="postcode" value={profile.postcode || "799001"} onChange={handleProfileChange} disabled={!editing} />
+              </div>
+              <div className="field">
+                <label>Country</label>
+                <input name="country" value={profile.country || "India"} onChange={handleProfileChange} disabled={!editing} />
+              </div>
             </div>
-            <div className="toggle-row">
-              <label>Show email on profile</label>
-              <input type="checkbox" checked={privacy.showEmail} onChange={() => togglePrivacy("showEmail")} />
-            </div>
-            <div className="field">
-              <label>Language</label>
-              <select defaultValue="en">
-                <option value="en">English</option>
-                <option value="hi">Hindi</option>
-                <option value="bn">Bengali</option>
-              </select>
-            </div>
-          </div>
 
-          <div className="profile-section">
-            <h4>Recent Activity</h4>
-            <ul className="activity-list">
-              {activity.map((a) => (
-                <li key={a.id}>
-                  <div className="act-text">{a.text}</div>
-                  <div className="act-time muted">{a.time}</div>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="profile-section danger-section">
-            <h4>Danger Zone</h4>
-            <div className="danger-actions">
-              <button className="prof-btn ghost">Deactivate account</button>
-              <button className="prof-btn danger" onClick={() => alert("Account deletion demo")}>Delete account</button>
+            <div className="profile-panel-actions">
+              <button className="prof-btn primary" onClick={saveProfile}>Update</button>
             </div>
-          </div>
+          </section>
+
+          <section className="profile-secondary-grid">
+            <div className="card mini-card">
+              <h4>Security</h4>
+              <div className="field">
+                <label>Current password</label>
+                <input type="password" name="current" value={passwords.current} onChange={handlePasswordChange} placeholder="••••••" />
+              </div>
+              <div className="field">
+                <label>New password</label>
+                <input type="password" name="newPass" value={passwords.newPass} onChange={handlePasswordChange} placeholder="New password" />
+              </div>
+              <button className="prof-btn secondary" onClick={updatePassword}>Update Password</button>
+            </div>
+
+            <div className="card mini-card">
+              <h4>Notifications</h4>
+              <div className="toggle-row">
+                <span>Order updates</span>
+                <input type="checkbox" checked={notifications.orders} onChange={() => toggleNotification("orders")} />
+              </div>
+              <div className="toggle-row">
+                <span>Inventory alerts</span>
+                <input type="checkbox" checked={notifications.inventory} onChange={() => toggleNotification("inventory")} />
+              </div>
+              <div className="toggle-row">
+                <span>Support messages</span>
+                <input type="checkbox" checked={notifications.support} onChange={() => toggleNotification("support")} />
+              </div>
+            </div>
+          </section>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

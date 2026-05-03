@@ -1,7 +1,7 @@
 /* Full Page */
 .splash-container {
   height: 100vh;
-  width: 95%;
+  width: 100%;
   background: linear-gradient(135deg, #f5f7ff, #F5E4FF);
   padding: 20px 50px;
   font-family: "Segoe UI", sans-serif;
@@ -17,11 +17,39 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.dm-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  box-shadow: 0 10px 20px rgba(95, 44, 130, 0.12);
+}
+
+.dm-logo img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
 }
 
 .brand {
-  font-weight: bold;
-  color: #5f2c82;
+  font-weight: 800;
+  color: #4d278d;
+  font-size: 1.8rem;
+  letter-spacing: 0.2px;
 }
 
 .nav-links span {
@@ -87,6 +115,6 @@
 
 /* Right Image */
 .hero-right img {
-  width: 500px;
+  width: 963px;
   max-width: 100%;
 }

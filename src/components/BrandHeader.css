@@ -1,0 +1,45 @@
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dm-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  box-shadow: none;
+}
+
+.dm-logo img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.brand-heading {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-name {
+  font-weight: 800;
+  color: #4d278d;
+  font-size: 1.7rem;
+  letter-spacing: 0.2px;
+}
+
+.brand-tag {
+  margin-top: 2px;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+.brand.small .brand-name {
+  font-size: 1.2rem;
+}
