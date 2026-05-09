@@ -26,6 +26,25 @@ const topProducts = [
 
 export default function Dashboard() {
   const maxRevenue = Math.max(...revenueData.map(d => d.value));
+  const minRevenue = Math.min(...revenueData.map(d => d.value));
+  const averageRevenue = Math.round(revenueData.reduce((sum, d) => sum + d.value, 0) / revenueData.length);
+  const firstRevenue = revenueData[0].value;
+  const lastRevenue = revenueData[revenueData.length - 1].value;
+  const revenueChange = lastRevenue - firstRevenue;
+  const revenueChangePct = Math.round((revenueChange / firstRevenue) * 100);
+  const bestDay = revenueData.reduce((best, d) => (d.value > best.value ? d : best), revenueData[0]);
+  const worstDay = revenueData.reduce((worst, d) => (d.value < worst.value ? d : worst), revenueData[0]);
+
+  const chartWidth = 460;
+  const chartHeight = 140;
+  const chartPoints = revenueData.map((d, i) => {
+    const x = (chartWidth / (revenueData.length - 1)) * i;
+    const y = chartHeight - (d.value / maxRevenue) * chartHeight;
+    return { ...d, x, y };
+  });
+
+  const linePath = chartPoints.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ");
+
   const pie = { prescription: 60, otc: 25, personalCare: 15 };
   const calendarMonth = new Date(2026, 4, 1); // May 2026
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -53,15 +72,34 @@ export default function Dashboard() {
             <div className="panel-meta">Last 5 weeks</div>
           </div>
           <div className="revenue-chart">
-            {revenueData.map((d, i) => {
-              const height = Math.round((d.value / maxRevenue) * 100);
-              return (
-                <div key={i} className="bar-wrap">
-                  <div className="bar" style={{ height: `${height}%` }} title={`${d.label}: ${d.value}`} />
-                  <div className="bar-label">{d.label}</div>
-                </div>
-              );
-            })}
+            <div className="line-chart-wrapper">
+              <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="line-chart-svg" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="revenueGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#1f85de" />
+                    <stop offset="100%" stopColor="#6b46d5" />
+                  </linearGradient>
+                </defs>
+                <path d={linePath} className="line-path" />
+                {chartPoints.map((point, i) => (
+                  <g key={i}>
+                    <circle cx={point.x} cy={point.y} r="5" className="line-point" />
+                    <text x={point.x} y={point.y - 12} className="line-point-label">₹{point.value.toLocaleString()}</text>
+                  </g>
+                ))}
+              </svg>
+            </div>
+            <div className="line-labels">
+              {revenueData.map((d, i) => (
+                <div key={i} className="line-label">{d.label}</div>
+              ))}
+            </div>
+            <div className="revenue-analysis">
+              <div className="analysis-item"><strong>Average:</strong> ₹{averageRevenue.toLocaleString()}</div>
+              <div className="analysis-item"><strong>Trend:</strong> {revenueChange >= 0 ? "+" : ""}{revenueChangePct}% from 1 MAY to 5 MAY</div>
+              <div className="analysis-item"><strong>Peak:</strong> {bestDay.label} at ₹{bestDay.value.toLocaleString()}</div>
+              <div className="analysis-item"><strong>Lowest:</strong> {worstDay.label} at ₹{worstDay.value.toLocaleString()}</div>
+            </div>
           </div>
         </div>
 

@@ -259,9 +259,49 @@ body {
   width: 20px;
   height: 20px;
 }
+.dm-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: rgba(255,255,255,0.94);
+  border-radius: 14px;
+  border: 1px solid rgba(226,232,240,0.9);
+  box-shadow: 0 8px 20px rgba(15,23,42,0.05);
+}
+.dm-status-pill {
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #fff;
+}
+.dm-status-pill.online {
+  background: #10b981;
+}
+.dm-status-pill.offline {
+  background: #ef4444;
+}
+.dm-status-toggle {
+  border: none;
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: #1f85de;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform .16s ease, filter .16s ease;
+}
+.dm-status-toggle:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
 .dm-badge {
   position: absolute;
   top: 6px;
+  right: 6px;
   right: 6px;
   min-width: 18px;
   height: 18px;
@@ -397,33 +437,66 @@ body {
 }
 .revenue-chart {
   display: flex;
-  align-items: end;
-  gap: 12px;
-  height: 160px;
-  padding: 8px;
-}
-.bar-wrap {
-  display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  width: 60px;
-}
-.bar {
+  gap: 12px;
+  padding: 8px 0 0;
+  align-items: stretch;
   width: 100%;
-  background: var(--primary-gradient);
-  border-radius: 6px;
-  transition: transform 180ms ease, opacity 180ms ease;
-  box-shadow: 0 6px 18px rgba(99,66,255,0.06);
 }
-.bar:hover {
-  transform: translateY(-6px);
-  opacity: 0.95;
+.line-chart-wrapper {
+  background: var(--glass);
+  border-radius: 16px;
+  padding: 16px;
+  min-height: 160px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.bar-label {
+.line-chart-svg {
+  width: 100%;
+  height: 160px;
+}
+.line-path {
+  fill: none;
+  stroke: url(#revenueGradient);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.line-point {
+  fill: #fff;
+  stroke: var(--primary);
+  stroke-width: 4;
+  filter: drop-shadow(0 6px 12px rgba(31, 133, 222, 0.18));
+}
+.line-point-label {
+  fill: var(--text);
+  font-size: 11px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+.line-labels {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+.line-label {
+  text-align: center;
   font-size: 12px;
   color: var(--muted);
-  text-align: center;
+}
+.revenue-analysis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.analysis-item {
+  font-size: 13px;
+  color: var(--muted);
+}
+.analysis-item strong {
+  color: var(--text);
 }
 
 /* Funnel list */

@@ -15,6 +15,8 @@ export default function ProfilePage() {
 
   const [avatar, setAvatar] = useState(null);
   const [editing, setEditing] = useState(false);
+  const [activeTab, setActiveTab] = useState("account");
+  const [onlineStatus, setOnlineStatus] = useState(true);
   const [passwords, setPasswords] = useState({ current: "", newPass: "", confirm: "" });
   const [notifications, setNotifications] = useState({
     orders: true,
@@ -23,6 +25,34 @@ export default function ProfilePage() {
     support: true,
   });
   const [privacy, setPrivacy] = useState({ twoFactor: false, showEmail: true });
+  const [documents, setDocuments] = useState([
+    { id: "employee", title: "Employee contract", filename: "Employee contract.pdf", verifiedAt: "2026-05-02 14:30" },
+    { id: "pharmacy", title: "Pharmacy license", filename: "Pharmacy license.pdf", verifiedAt: "2026-04-18 09:20" },
+    { id: "insurance", title: "Insurance policy", filename: "Insurance policy.pdf", verifiedAt: "2026-04-27 11:45" },
+  ]);
+  const [selectedDocumentId, setSelectedDocumentId] = useState(null);
+  const [newDocumentType, setNewDocumentType] = useState("employee");
+  const selectedDocument = documents.find((doc) => doc.id === selectedDocumentId) || null;
+  const documentTemplates = {
+    employee: {
+      id: "employee",
+      title: "Employee contract",
+      filename: "Employee contract.pdf",
+      verifiedAt: "2026-05-02 14:30",
+    },
+    pharmacy: {
+      id: "pharmacy",
+      title: "Pharmacy license",
+      filename: "Pharmacy license.pdf",
+      verifiedAt: "2026-04-18 09:20",
+    },
+    insurance: {
+      id: "insurance",
+      title: "Insurance policy",
+      filename: "Insurance policy.pdf",
+      verifiedAt: "2026-04-27 11:45",
+    },
+  };
   const [activity] = useState([
     { id: 1, text: "Approved prescription #ORD-1004", time: "2026-04-24 10:12" },
     { id: 2, text: "Restocked Paracetamol 650mg (+200)", time: "2026-04-23 15:04" },
@@ -69,6 +99,209 @@ export default function ProfilePage() {
     setPrivacy((p) => ({ ...p, [key]: !p[key] }));
   }
 
+  function handleDocumentChange(id, field, value) {
+    setDocuments((docs) => docs.map((doc) => (doc.id === id ? { ...doc, [field]: value } : doc)));
+  }
+
+  function viewDocument(doc) {
+    setSelectedDocumentId(doc.id);
+  }
+
+  function clearActiveDocument() {
+    setSelectedDocumentId(null);
+  }
+
+  function addDocument() {
+    const template = documentTemplates[newDocumentType];
+    if (!template) return;
+    if (documents.some((doc) => doc.id === template.id)) {
+      alert(`${template.title} is already added.`);
+      return;
+    }
+    setDocuments((docs) => [...docs, template]);
+  }
+
+  function renderTabContent() {
+    switch (activeTab) {
+      case "company":
+        return (
+          <div className="profile-form-grid">
+            <div className="field">
+              <label>Company Name</label>
+              <input value="DoorMeds Pharmacy" disabled={!editing} />
+            </div>
+            <div className="field">
+              <label>Branch</label>
+              <input value="Agartala Branch" disabled={!editing} />
+            </div>
+            <div className="field">
+              <label>Industry</label>
+              <input value="Healthcare" disabled={!editing} />
+            </div>
+            <div className="field">
+              <label>Team Size</label>
+              <input value="24" disabled={!editing} />
+            </div>
+            <div className="field">
+              <label>Headquarters</label>
+              <input value="Agartala, India" disabled={!editing} />
+            </div>
+          </div>
+        );
+      case "documents":
+        return (
+          <div>
+            <div className="doc-add-bar">
+              <div className="field">
+                <label>Add document</label>
+                <select value={newDocumentType} onChange={(e) => setNewDocumentType(e.target.value)}>
+                  <option value="employee">Employee contract</option>
+                  <option value="pharmacy">Pharmacy license</option>
+                  <option value="insurance">Insurance policy</option>
+                </select>
+              </div>
+              <button type="button" className="prof-btn primary" onClick={addDocument}>
+                Add
+              </button>
+            </div>
+
+            <div className="profile-documents-grid">
+              {documents.map((doc) => (
+                <div key={doc.id} className="doc-row">
+                  <div className="doc-info">
+                    <label>{doc.title}</label>
+                    <input
+                      type="text"
+                      value={doc.filename}
+                      onChange={(e) => handleDocumentChange(doc.id, "filename", e.target.value)}
+                    />
+                  </div>
+                  <div className="doc-info">
+                    <label>Verification time</label>
+                    <input
+                      type="text"
+                      value={doc.verifiedAt}
+                      onChange={(e) => handleDocumentChange(doc.id, "verifiedAt", e.target.value)}
+                    />
+                  </div>
+                  <div className="doc-actions">
+                    <button type="button" className="prof-btn secondary" onClick={() => viewDocument(doc)}>
+                      View
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              {selectedDocument && (
+                <div className="doc-detail-panel">
+                  <div className="doc-detail-header">
+                    <h3>{selectedDocument.title}</h3>
+                    <button type="button" className="prof-btn" onClick={clearActiveDocument}>
+                      Close
+                    </button>
+                  </div>
+                  <div className="doc-detail-body">
+                    <div className="field">
+                      <label>File Name</label>
+                      <input type="text" value={selectedDocument.filename} readOnly />
+                    </div>
+                    <div className="field">
+                      <label>Verified at</label>
+                      <input type="text" value={selectedDocument.verifiedAt} readOnly />
+                    </div>
+                    <div className="field">
+                      <label>Document description</label>
+                      <textarea value={`Full details for ${selectedDocument.title}. You can update the filename or verification time above.`} readOnly />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      case "billing":
+        return (
+          <div className="profile-billing">
+            <div className="field">
+              <label>Card holder</label>
+              <input value="Pritam Biswas" disabled />
+            </div>
+            <div className="field">
+              <label>Card number</label>
+              <input value="**** **** **** 1234" disabled />
+            </div>
+            <div className="field">
+              <label>Expiry</label>
+              <input value="12/27" disabled />
+            </div>
+            <div className="field">
+              <label>Billing email</label>
+              <input value={profile.email} disabled />
+            </div>
+          </div>
+        );
+      case "notifications":
+        return (
+          <div className="profile-notifications-panel">
+            <div className="toggle-row">
+              <span>Order updates</span>
+              <input type="checkbox" checked={notifications.orders} onChange={() => toggleNotification("orders")} />
+            </div>
+            <div className="toggle-row">
+              <span>Inventory alerts</span>
+              <input type="checkbox" checked={notifications.inventory} onChange={() => toggleNotification("inventory")} />
+            </div>
+            <div className="toggle-row">
+              <span>Promotional emails</span>
+              <input type="checkbox" checked={notifications.promotions} onChange={() => toggleNotification("promotions")} />
+            </div>
+            <div className="toggle-row">
+              <span>Support messages</span>
+              <input type="checkbox" checked={notifications.support} onChange={() => toggleNotification("support")} />
+            </div>
+          </div>
+        );
+      case "account":
+      default:
+        return (
+          <div className="profile-form-grid">
+            <div className="field">
+              <label>First Name</label>
+              <input name="name" value={profile.name.split(" ")[0]} onChange={handleProfileChange} disabled={!editing} />
+            </div>
+            <div className="field">
+              <label>Last Name</label>
+              <input name="lastName" value={profile.name.split(" ")[1] || ""} onChange={handleProfileChange} disabled={!editing} />
+            </div>
+            <div className="field">
+              <label>Phone Number</label>
+              <input name="phone" value={profile.phone} onChange={handleProfileChange} disabled={!editing} />
+            </div>
+            <div className="field">
+              <label>Email address</label>
+              <input name="email" value={profile.email} onChange={handleProfileChange} disabled={!editing} />
+            </div>
+            <div className="field">
+              <label>City</label>
+              <input name="city" value={profile.city || "Agartala"} onChange={handleProfileChange} disabled={!editing} />
+            </div>
+            <div className="field">
+              <label>State / County</label>
+              <input name="state" value={profile.state || "Tripura"} onChange={handleProfileChange} disabled={!editing} />
+            </div>
+            <div className="field">
+              <label>Postcode</label>
+              <input name="postcode" value={profile.postcode || "799001"} onChange={handleProfileChange} disabled={!editing} />
+            </div>
+            <div className="field">
+              <label>Country</label>
+              <input name="country" value={profile.country || "India"} onChange={handleProfileChange} disabled={!editing} />
+            </div>
+          </div>
+        );
+    }
+  }
+
   return (
     <div className="profile-page">
       <div className="profile-page-header">
@@ -79,6 +312,13 @@ export default function ProfilePage() {
 
         <div className="profile-page-actions">
           <button className="prof-btn" onClick={() => setEditing((s) => !s)}>{editing ? "Cancel" : "Edit Profile"}</button>
+          <div className={`profile-status-pill ${onlineStatus ? "online" : "offline"}`}>
+            <span className="profile-status-dot" />
+            {onlineStatus ? "Online" : "Offline"}
+          </div>
+          <button className={`prof-btn profile-status-button ${onlineStatus ? "secondary" : "primary"}`} onClick={() => setOnlineStatus((value) => !value)}>
+            {onlineStatus ? "Go Offline" : "Go Online"}
+          </button>
           <button className="prof-btn primary" onClick={saveProfile}>Save</button>
         </div>
       </div>
@@ -129,51 +369,22 @@ export default function ProfilePage() {
         <div className="profile-main-panel">
           <section className="profile-panel card">
             <div className="profile-panel-tabs">
-              <button className="tab active">Account Settings</button>
-              <button className="tab">Company Settings</button>
-              <button className="tab">Documents</button>
-              <button className="tab">Billing</button>
-              <button className="tab">Notifications</button>
+              <button className={`tab ${activeTab === "account" ? "active" : ""}`} onClick={() => setActiveTab("account")}>Account Settings</button>
+              <button className={`tab ${activeTab === "company" ? "active" : ""}`} onClick={() => setActiveTab("company")}>Company Settings</button>
+              <button className={`tab ${activeTab === "documents" ? "active" : ""}`} onClick={() => setActiveTab("documents")}>Documents</button>
+              <button className={`tab ${activeTab === "billing" ? "active" : ""}`} onClick={() => setActiveTab("billing")}>Billing</button>
+              <button className={`tab ${activeTab === "notifications" ? "active" : ""}`} onClick={() => setActiveTab("notifications")}>Notifications</button>
             </div>
 
-            <div className="profile-form-grid">
-              <div className="field">
-                <label>First Name</label>
-                <input name="name" value={profile.name.split(" ")[0]} onChange={handleProfileChange} disabled={!editing} />
-              </div>
-              <div className="field">
-                <label>Last Name</label>
-                <input name="lastName" value={profile.name.split(" ")[1] || ""} onChange={handleProfileChange} disabled={!editing} />
-              </div>
-              <div className="field">
-                <label>Phone Number</label>
-                <input name="phone" value={profile.phone} onChange={handleProfileChange} disabled={!editing} />
-              </div>
-              <div className="field">
-                <label>Email address</label>
-                <input name="email" value={profile.email} onChange={handleProfileChange} disabled={!editing} />
-              </div>
-              <div className="field">
-                <label>City</label>
-                <input name="city" value={profile.city || "Agartala"} onChange={handleProfileChange} disabled={!editing} />
-              </div>
-              <div className="field">
-                <label>State / County</label>
-                <input name="state" value={profile.state || "Tripura"} onChange={handleProfileChange} disabled={!editing} />
-              </div>
-              <div className="field">
-                <label>Postcode</label>
-                <input name="postcode" value={profile.postcode || "799001"} onChange={handleProfileChange} disabled={!editing} />
-              </div>
-              <div className="field">
-                <label>Country</label>
-                <input name="country" value={profile.country || "India"} onChange={handleProfileChange} disabled={!editing} />
-              </div>
+            <div className="profile-tab-panel">
+              {renderTabContent()}
             </div>
 
-            <div className="profile-panel-actions">
-              <button className="prof-btn primary" onClick={saveProfile}>Update</button>
-            </div>
+            {activeTab === "account" && (
+              <div className="profile-panel-actions">
+                <button className="prof-btn primary" onClick={saveProfile}>Update</button>
+              </div>
+            )}
           </section>
 
           <section className="profile-secondary-grid">
