@@ -13,6 +13,8 @@ import PatientsPage from "./Patients";
 
 export default function App() {
   const [page, setPage] = useState("Splash");
+  const [onlineStatus, setOnlineStatus] = useState(true);
+  const [displayName, setDisplayName] = useState("Pritam Biswas");
 
   if (page === "Splash") {
     return <SplashScreen onNavigate={setPage} />;
@@ -23,14 +25,14 @@ export default function App() {
   }
   // const [page, setPage] = useState("Dashboard");
   return (
-    <DashboardLayout activeMenu={page} onNavigate={setPage}>
+    <DashboardLayout activeMenu={page} onNavigate={setPage} onlineStatus={onlineStatus} displayName={displayName}>
       {page === "Dashboard" && <Dashboard />}
       {page === "Product" && <ProductPage />}
       {page === "Inventory" && <InventoryPage />}
       {page === "Orders" && <OrdersPage />}
       {page === "Support" && <SupportPage />}
       {page === "Patients" && <PatientsPage />}
-      {page === "Profile" && <ProfilePage />}
+      {page === "Profile" && <ProfilePage onlineStatus={onlineStatus} setOnlineStatus={setOnlineStatus} displayName={displayName} setDisplayName={setDisplayName} />}
     </DashboardLayout>
   );
 }

@@ -2,8 +2,15 @@
 import React, { useState } from "react";
 import Logo from "./assets/logo.png"; // replace with your logo path
 import "./dashboard.css";
-export default function DashboardLayout({ children, activeMenu = "Dashboard", onNavigate }) {
+export default function DashboardLayout({ children, activeMenu = "Dashboard", onNavigate, onlineStatus = true, displayName = "Pritam Biswas" }) {
   const [dashboardSearch, setDashboardSearch] = useState("");
+  const initials = displayName
+    .split(" ")
+    .filter(Boolean)
+    .map((part) => part[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   return (
     <div className="dm-root">
@@ -151,7 +158,7 @@ export default function DashboardLayout({ children, activeMenu = "Dashboard", on
     <main className="dm-main">
         <header className="dm-header">
           <div className="dm-greeting">
-            <h2>Welcome back, <span className="dm-username">Pritam Biswas</span></h2>
+            <h2>Welcome back, <span className="dm-username">{displayName}</span></h2>
             <p className="dm-banner-text">
               Your monthly healthcare supplies are ready! Review and approve your curated prescription list and upcoming OTC orders. <span className="dm-link">View all items</span>
             </p>
@@ -188,8 +195,13 @@ export default function DashboardLayout({ children, activeMenu = "Dashboard", on
               </svg>
               <span className="dm-badge">3</span>
             </button>
-            <button type="button" className="dm-avatar" aria-label="Open profile">
-              PB
+            <button
+              type="button"
+              className="dm-avatar"
+              aria-label={`Open profile (${onlineStatus ? "online" : "offline"})`}
+            >
+              {initials || "PB"}
+              <span className={`dm-avatar-status ${onlineStatus ? "online" : "offline"}`} />
             </button>
           </div>
         </header>

@@ -3,20 +3,30 @@ import React, { useState } from "react";
 // import Logo from "./logo.png"; // replace with your logo path
 import "./profile.css";
 
-export default function ProfilePage() {
-  const [profile, setProfile] = useState({
-    name: "Pritam Biswas",
-    email: "pritam@example.com",
-    phone: "+91 90000 11111",
-    role: "Pharmacy Manager",
-    location: "Agartala, India",
-    bio: "Managing DoorMeds pharmacy operations and inventory.",
+export default function ProfilePage({ onlineStatus = true, setOnlineStatus = () => {}, displayName = "Pritam Biswas", setDisplayName = () => {} }) {
+  const [profile, setProfile] = useState(() => {
+    const [firstName, ...rest] = displayName.split(" ");
+    return {
+      firstName: firstName || "Pritam",
+      lastName: rest.join(" ") || "Biswas",
+      email: "pritam@example.com",
+      phone: "+91 90000 11111",
+      role: "Pharmacy Manager",
+      location: "Agartala, India",
+      bio: "Managing DoorMeds pharmacy operations and inventory.",
+      city: "Agartala",
+      state: "Tripura",
+      postcode: "799001",
+      country: "India",
+    };
   });
+  const profileFullName = `${profile.firstName} ${profile.lastName}`.trim();
+  const profileLocation = [profile.city, profile.state, profile.country].filter(Boolean).join(", ");
 
   const [avatar, setAvatar] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [editing, setEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("account");
-  const [onlineStatus, setOnlineStatus] = useState(true);
   const [passwords, setPasswords] = useState({ current: "", newPass: "", confirm: "" });
   const [notifications, setNotifications] = useState({
     orders: true,
@@ -66,9 +76,22 @@ export default function ProfilePage() {
     setAvatar(url);
   }
 
+  function refreshProfileData() {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }
+
   function handleProfileChange(e) {
     const { name, value } = e.target;
-    setProfile((p) => ({ ...p, [name]: value }));
+    setProfile((p) => {
+      const updated = { ...p, [name]: value };
+      if (name === "firstName" || name === "lastName") {
+        setDisplayName(`${updated.firstName || ""} ${updated.lastName || ""}`.trim());
+      }
+      return updated;
+    });
   }
 
   function saveProfile() {
@@ -267,11 +290,11 @@ export default function ProfilePage() {
           <div className="profile-form-grid">
             <div className="field">
               <label>First Name</label>
-              <input name="name" value={profile.name.split(" ")[0]} onChange={handleProfileChange} disabled={!editing} />
+              <input name="firstName" value={profile.firstName} onChange={handleProfileChange} disabled={!editing} />
             </div>
             <div className="field">
               <label>Last Name</label>
-              <input name="lastName" value={profile.name.split(" ")[1] || ""} onChange={handleProfileChange} disabled={!editing} />
+              <input name="lastName" value={profile.lastName} onChange={handleProfileChange} disabled={!editing} />
             </div>
             <div className="field">
               <label>Phone Number</label>
@@ -283,23 +306,38 @@ export default function ProfilePage() {
             </div>
             <div className="field">
               <label>City</label>
-              <input name="city" value={profile.city || "Agartala"} onChange={handleProfileChange} disabled={!editing} />
+              <input name="city" value={profile.city} onChange={handleProfileChange} disabled={!editing} />
             </div>
             <div className="field">
               <label>State / County</label>
-              <input name="state" value={profile.state || "Tripura"} onChange={handleProfileChange} disabled={!editing} />
+              <input name="state" value={profile.state} onChange={handleProfileChange} disabled={!editing} />
             </div>
             <div className="field">
               <label>Postcode</label>
-              <input name="postcode" value={profile.postcode || "799001"} onChange={handleProfileChange} disabled={!editing} />
+              <input name="postcode" value={profile.postcode} onChange={handleProfileChange} disabled={!editing} />
             </div>
             <div className="field">
               <label>Country</label>
-              <input name="country" value={profile.country || "India"} onChange={handleProfileChange} disabled={!editing} />
+              <input name="country" value={profile.country} onChange={handleProfileChange} disabled={!editing} />
             </div>
           </div>
         );
     }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="profile-loading-screen">
+        <div className="profile-loading-card">
+          <div className="refresh-icon spinning">↻</div>
+          <h2>Loading profile data...</h2>
+          <p>Waiting for server data. If it takes too long, tap refresh.</p>
+          <button className="prof-btn primary" onClick={refreshProfileData}>
+            Refresh
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -312,6 +350,10 @@ export default function ProfilePage() {
 
         <div className="profile-page-actions">
           <button className="prof-btn" onClick={() => setEditing((s) => !s)}>{editing ? "Cancel" : "Edit Profile"}</button>
+          <button className="prof-btn secondary refresh-button" onClick={refreshProfileData} disabled={isLoading}>
+            <span className="refresh-button-icon">↻</span>
+            Refresh
+          </button>
           <div className={`profile-status-pill ${onlineStatus ? "online" : "offline"}`}>
             <span className="profile-status-dot" />
             {onlineStatus ? "Online" : "Offline"}
@@ -330,13 +372,13 @@ export default function ProfilePage() {
               {avatar ? (
                 <img src={avatar} alt="avatar" className="avatar-img" />
               ) : (
-                <div className="avatar-fallback">{profile.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}</div>
+                <div className="avatar-fallback">{profileFullName.split(" ").map((n) => n[0]).slice(0, 2).join("")}</div>
               )}
             </div>
             <div className="profile-meta">
-              <div className="profile-name">{profile.name}</div>
+              <div className="profile-name">{profileFullName}</div>
               <div className="profile-role">{profile.role}</div>
-              <div className="profile-location">{profile.location}</div>
+              <div className="profile-location">{profileLocation || profile.location}</div>
             </div>
           </div>
 

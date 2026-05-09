@@ -246,9 +246,26 @@ body {
   position: relative;
 }
 .dm-avatar {
+  position: relative;
   background: linear-gradient(90deg, #1f85de 0%, #6b46d5 50%, #9d26e0 100%);
   color: #fff;
   font-weight: 700;
+}
+.dm-avatar-status {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18);
+}
+.dm-avatar-status.online {
+  background-color: #34d399;
+}
+.dm-avatar-status.offline {
+  background-color: #f87171;
 }
 .dm-notification-btn:hover,
 .dm-avatar:hover {
