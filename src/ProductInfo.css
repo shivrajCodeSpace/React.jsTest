@@ -1,0 +1,363 @@
+:root {
+  --bg: #f6f8fb;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --primary: #1f85de;
+  --primary-strong: #6b46d5;
+  --primary-gradient: linear-gradient(90deg, #1f85de 0%, #6b46d5 50%, #9d26e0 100%);
+  --danger: #ef4444;
+  --text: #0f172a;
+  --surface: rgba(255,255,255,0.92);
+  --border: rgba(226,232,240,0.85);
+  --shadow: 0 24px 60px rgba(15,23,42,0.08);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.product-info-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7ff, #F5E4FF);
+  padding: 0;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 50px;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.nav-links span {
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links span:hover {
+  color: var(--primary);
+}
+
+.contact-btn {
+  padding: 10px 20px;
+  border: 2px solid var(--primary);
+  background: var(--primary);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.contact-btn:hover {
+  background: var(--primary-strong);
+  border-color: var(--primary-strong);
+}
+
+.product-info-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 40px;
+}
+
+.product-header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.product-header h1 {
+  font-size: 3.5rem;
+  margin-bottom: 15px;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 1.3rem;
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+.product-section {
+  margin-bottom: 80px;
+}
+
+.product-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.features-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.feature {
+  padding: 30px;
+  background: var(--card);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.feature h3 {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+.feature ul {
+  list-style: none;
+  padding: 0;
+}
+
+.feature li {
+  padding: 8px 0;
+  color: #64748b;
+  line-height: 1.6;
+  border-bottom: 1px solid rgba(226,232,240,0.5);
+  padding-bottom: 12px;
+}
+
+.feature li:last-child {
+  border-bottom: none;
+}
+
+.feature li:before {
+  content: "✓ ";
+  color: var(--primary);
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.product-benefits {
+  margin-bottom: 80px;
+}
+
+.product-benefits h2 {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.benefit-card {
+  padding: 30px;
+  background: var(--card);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.benefit-card:hover {
+  transform: translateY(-5px);
+}
+
+.benefit-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 15px;
+}
+
+.benefit-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+.benefit-card p {
+  color: #64748b;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.pricing-section {
+  margin-bottom: 80px;
+}
+
+.pricing-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.pricing-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.pricing-card {
+  padding: 40px;
+  background: var(--card);
+  border-radius: 16px;
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pricing-card.featured {
+  border-color: var(--primary);
+  transform: scale(1.05);
+  box-shadow: 0 32px 80px rgba(31,133,222,0.25);
+}
+
+.pricing-card h3 {
+  font-size: 1.6rem;
+  margin-bottom: 15px;
+  color: var(--text);
+}
+
+.price {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 30px;
+}
+
+.price span {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.pricing-card ul {
+  list-style: none;
+  margin-bottom: 30px;
+  padding: 0;
+}
+
+.pricing-card li {
+  padding: 10px 0;
+  color: #64748b;
+  border-bottom: 1px solid rgba(226,232,240,0.5);
+}
+
+.pricing-card li:last-child {
+  border-bottom: none;
+}
+
+.pricing-btn {
+  width: 100%;
+  padding: 12px 20px;
+  border: 2px solid var(--primary);
+  background: transparent;
+  color: var(--primary);
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pricing-btn:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.pricing-btn.primary {
+  background: var(--primary);
+  color: white;
+}
+
+.pricing-btn.primary:hover {
+  background: var(--primary-strong);
+  border-color: var(--primary-strong);
+}
+
+.product-cta {
+  text-align: center;
+  padding: 60px 40px;
+  background: var(--primary-gradient);
+  border-radius: 24px;
+  color: white;
+}
+
+.product-cta h2 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+}
+
+.product-cta p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  color: rgba(255,255,255,0.9);
+}
+
+.cta-btn {
+  padding: 14px 40px;
+  background: white;
+  color: var(--primary);
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px 20px;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .product-header h1 {
+    font-size: 2.5rem;
+  }
+
+  .pricing-card.featured {
+    transform: scale(1);
+  }
+
+  .product-info-content {
+    padding: 30px 20px;
+  }
+}

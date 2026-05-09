@@ -10,6 +10,10 @@ import OrdersPage from "./Order";
 import SupportPage from "./Support";
 import ProfilePage from "./Profile";
 import PatientsPage from "./Patients";
+import AboutPage from "./About";
+import ServicesPage from "./Services";
+import ProductInfoPage from "./ProductInfo";
+import BlogPage from "./Blog";
 
 export default function App() {
   const [page, setPage] = useState("Splash");
@@ -22,6 +26,22 @@ export default function App() {
 
   if (page === "Auth") {
     return <AuthPage onNavigate={setPage} />;
+  }
+
+  if (page === "About") {
+    return <AboutPage onNavigate={setPage} />;
+  }
+
+  if (page === "Services") {
+    return <ServicesPage onNavigate={setPage} />;
+  }
+
+  if (page === "ProductInfo") {
+    return <ProductInfoPage onNavigate={setPage} />;
+  }
+
+  if (page === "Blog") {
+    return <BlogPage onNavigate={setPage} />;
   }
   // const [page, setPage] = useState("Dashboard");
   return (

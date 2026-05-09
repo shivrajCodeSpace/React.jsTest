@@ -13,11 +13,11 @@ export default function SplashScreen({ onNavigate }) {
           <BrandHeader showTagline={false} />
         </div>
         <div className="nav-links">
-          <span>About</span>
-          <span>Service</span>
-          <span>Product</span>
-          <span>Blog</span>
-          <button className="contact-btn">Contact us</button>
+          <span onClick={() => onNavigate("About")}>About</span>
+          <span onClick={() => onNavigate("Services")}>Service</span>
+          <span onClick={() => onNavigate("ProductInfo")}>Product</span>
+          <span onClick={() => onNavigate("Blog")}>Blog</span>
+          <button className="contact-btn" onClick={() => onNavigate("Auth")}>Contact us</button>
         </div>
       </div>
 
