@@ -12,16 +12,16 @@ import ProfilePage from "./Profile";
 import PatientsPage from "./Patients";
 
 export default function App() {
-  // const [page, setPage] = useState("Splash");
+  const [page, setPage] = useState("Splash");
 
-  // if (page === "Splash") {
-  //   return <SplashScreen onNavigate={setPage} />;
-  // }
+  if (page === "Splash") {
+    return <SplashScreen onNavigate={setPage} />;
+  }
 
-  // if (page === "Auth") {
-  //   return <AuthPage onNavigate={setPage} />;
-  // }
-  const [page, setPage] = useState("Dashboard");
+  if (page === "Auth") {
+    return <AuthPage onNavigate={setPage} />;
+  }
+  // const [page, setPage] = useState("Dashboard");
   return (
     <DashboardLayout activeMenu={page} onNavigate={setPage}>
       {page === "Dashboard" && <Dashboard />}

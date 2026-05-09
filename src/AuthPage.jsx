@@ -6,7 +6,7 @@ import BrandHeader from "./components/BrandHeader";
 
 export default function AuthPage({ onNavigate }) {
     const [isLogin, setIsLogin] = useState(true);
-    const [step, setStep] = useState("form"); // form | verify
+    const [step, setStep] = useState("form"); // form | verify | forgot
 
     const [emailOrPhone, setEmailOrPhone] = useState("");
     const [password, setPassword] = useState("");
@@ -17,6 +17,7 @@ export default function AuthPage({ onNavigate }) {
     const validateInput = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const phoneRegex = /^[0-9]{10}$/;
+        const isNumeric = /^[0-9]+$/.test(emailOrPhone);
 
         if (!emailOrPhone) {
             return "Field cannot be empty";
@@ -26,10 +27,12 @@ export default function AuthPage({ onNavigate }) {
             if (!emailRegex.test(emailOrPhone)) {
                 return "Invalid email format";
             }
-        } else {
+        } else if (isNumeric) {
             if (!phoneRegex.test(emailOrPhone)) {
                 return "Phone number must be 10 digits";
             }
+        } else {
+            return "Invalid email format";
         }
 
         return "";
@@ -48,6 +51,25 @@ export default function AuthPage({ onNavigate }) {
         setError("");
         console.log("Sending OTP to:", emailOrPhone);
         setStep("verify");
+    };
+
+    const handleForgotPassword = () => {
+        setError("");
+        setStep("forgot");
+    };
+
+    const handleSendReset = (e) => {
+        e.preventDefault();
+
+        const validationError = validateInput();
+        if (validationError) {
+            setError(validationError);
+            return;
+        }
+
+        setError("");
+        alert(`Password reset link sent to ${emailOrPhone}`);
+        setStep("form");
     };
 
     // 🔹 Verify OTP
@@ -76,11 +98,8 @@ export default function AuthPage({ onNavigate }) {
 
         setError("");
 
-        if (emailOrPhone === "user@example.com" && password === "password") {
-            alert("Login successful 🚀");
+        if (onNavigate) {
             onNavigate("Dashboard");
-        } else {
-            setError("Invalid credentials ❌");
         }
     };
 
@@ -93,6 +112,8 @@ export default function AuthPage({ onNavigate }) {
                     <h2>
                         {step === "verify"
                             ? "Verify OTP"
+                            : step === "forgot"
+                            ? "Forgot Password"
                             : isLogin
                             ? "Welcome Back"
                             : "Create Account"}
@@ -101,6 +122,8 @@ export default function AuthPage({ onNavigate }) {
                     <p>
                         {step === "verify"
                             ? "Enter the OTP sent to your email/phone"
+                            : step === "forgot"
+                            ? "Enter your email or phone to reset your password"
                             : isLogin
                             ? "Sign in to continue"
                             : "Sign up to get started"}
@@ -137,13 +160,48 @@ export default function AuthPage({ onNavigate }) {
                                     <label>
                                         <input type="checkbox" /> Remember me
                                     </label>
-                                    <span className="forgot">Forgot password?</span>
+                                    <span className="forgot" onClick={handleForgotPassword}>
+                                        Forgot password?
+                                    </span>
                                 </div>
                             )}
 
                             <button type="submit" className="auth-btn">
                                 {isLogin ? "Sign In" : "Send OTP"}
                             </button>
+                        </form>
+                    )}
+
+                    {step === "forgot" && (
+                        <form onSubmit={handleSendReset}>
+                            <div className={`input-group ${error ? "input-error" : ""}`}>
+                                <FaUser className="input-icon" />
+                                <input
+                                    type="text"
+                                    placeholder="Email / Phone"
+                                    required
+                                    value={emailOrPhone}
+                                    onChange={(e) => setEmailOrPhone(e.target.value)}
+                                />
+                            </div>
+
+                            {error && <p className="error-text">{error}</p>}
+
+                            <button type="submit" className="auth-btn">
+                                Send reset link
+                            </button>
+
+                            <p className="switch-text">
+                                Remembered your password?{' '}
+                                <span
+                                    onClick={() => {
+                                        setStep("form");
+                                        setError("");
+                                    }}
+                                >
+                                    Sign in
+                                </span>
+                            </p>
                         </form>
                     )}
 

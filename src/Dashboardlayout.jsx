@@ -82,23 +82,7 @@ export default function DashboardLayout({ children, activeMenu = "Dashboard", on
                   <path d="M9 3v4" fill="none" stroke="url(#navGradientOrders)" strokeWidth="1.8" strokeLinecap="round" />
                 </svg>
               ),
-            },{
-                key: "Patients",
-                label: "Patients",
-                icon: (
-                  <svg viewBox="0 0 24 24" className="nav-icon" aria-hidden="true">
-                    <defs>
-                      <linearGradient id="navGradientPatients" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stopColor="#1f85de" />
-                        <stop offset="100%" stopColor="#9d26e0" />
-                      </linearGradient>
-                    </defs>
-                    <circle cx="12" cy="7" r="3.5" fill="none" stroke="url(#navGradientPatients)" strokeWidth="1.8" />
-                    <path d="M6 21c0-3 2.5-5 6-5s6 2 6 5" fill="none" stroke="url(#navGradientPatients)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M12 12l-1 2m0 2l1 2m0 0l1-2m0-2l-1-2" fill="none" stroke="url(#navGradientPatients)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                ),
-              },
+            },
             {
               key: "Support",
               label: "Support",
@@ -116,7 +100,25 @@ export default function DashboardLayout({ children, activeMenu = "Dashboard", on
                 </svg>
               ),
             },
-            
+            {
+                key: "Patients",
+                label: "Patients",
+                icon: (
+                  <svg viewBox="0 0 24 24" className="nav-icon" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="navGradientPatients" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stopColor="#1f85de" />
+                        <stop offset="100%" stopColor="#9d26e0" />
+                      </linearGradient>
+                    </defs>
+                    <circle cx="8" cy="8" r="2.5" fill="none" stroke="url(#navGradientPatients)" strokeWidth="1.8" />
+                    <circle cx="16" cy="8" r="2.5" fill="none" stroke="url(#navGradientPatients)" strokeWidth="1.8" />
+                    <path d="M4 17c0-2.5 2-4.5 4.5-4.5h7c2.5 0 4.5 2 4.5 4.5" fill="none" stroke="url(#navGradientPatients)" strokeWidth="1.8" strokeLinecap="round" />
+                    <path d="M8 13h8" fill="none" stroke="url(#navGradientPatients)" strokeWidth="1.8" strokeLinecap="round" />
+                    <path d="M12 16v5" fill="none" stroke="url(#navGradientPatients)" strokeWidth="1.8" strokeLinecap="round" />
+                  </svg>
+                ),
+              },
            {
               key: "Profile",
               label: "Profile",

@@ -8,7 +8,7 @@ import AuthPage from './AuthPage.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
-    <SplashScreen/>
-    <AuthPage />
+    {/* <SplashScreen/>
+    <AuthPage /> */}
   </StrictMode>,
 )
