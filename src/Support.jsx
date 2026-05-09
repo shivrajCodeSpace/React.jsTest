@@ -72,6 +72,15 @@ export default function SupportPage() {
   const [status, setStatus] = useState("All");
   const [channel, setChannel] = useState("All");
   const [selected, setSelected] = useState(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newTicket, setNewTicket] = useState({
+    subject: "",
+    customer: "",
+    phone: "",
+    priority: "High",
+    channel: "Email",
+    message: "",
+  });
   const [replyText, setReplyText] = useState("");
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 6;
@@ -123,20 +132,40 @@ export default function SupportPage() {
     if (selected && selected.id === id) setSelected((s) => ({ ...s, status: next }));
   }
 
-  function createTicketSample() {
+  function handleToggleAddForm() {
+    setShowAddForm((current) => !current);
+  }
+
+  function handleNewTicketChange(event) {
+    const { name, value } = event.target;
+    setNewTicket((prev) => ({ ...prev, [name]: value }));
+  }
+
+  function handleAddTicket(event) {
+    event.preventDefault();
     const id = `TCK-${Date.now().toString().slice(-6)}`;
-    const newTicket = {
+    const nextTicket = {
       id,
-      subject: `Sample issue ${id.slice(-4)}`,
-      customer: `Customer ${id.slice(-4)}`,
+      subject: newTicket.subject.trim() || `Issue ${id.slice(-4)}`,
+      customer: newTicket.customer.trim() || `Customer ${id.slice(-4)}`,
+      phone: newTicket.phone.trim() || "+91 90000 00000",
       date: new Date().toISOString().slice(0, 10),
-      priority: "Low",
+      priority: newTicket.priority,
       status: "Open",
-      channel: "Email",
-      messages: [{ from: "customer", text: "Sample message", time: new Date().toISOString().slice(0, 16).replace("T", " ") }],
-      tags: ["sample"],
+      channel: newTicket.channel,
+      messages: [{ from: "customer", text: newTicket.message.trim() || "Support needed", time: new Date().toISOString().slice(0, 16).replace("T", " ") }],
+      tags: [newTicket.channel.toLowerCase(), "new"],
     };
-    setTickets((p) => [newTicket, ...p]);
+    setTickets((current) => [nextTicket, ...current]);
+    setNewTicket({
+      subject: "",
+      customer: "",
+      phone: "",
+      priority: "High",
+      channel: "Email",
+      message: "",
+    });
+    setShowAddForm(false);
     setPage(1);
   }
 
@@ -186,9 +215,52 @@ export default function SupportPage() {
             ))}
           </select>
 
-          <button className="sup-btn primary" onClick={createTicketSample}>+ New Ticket</button>
+          <button className="sup-btn primary" onClick={handleToggleAddForm}>{showAddForm ? "Cancel" : "+ New Ticket"}</button>
         </div>
       </header>
+
+      {showAddForm && (
+        <section className="sup-add-form">
+          <h2>New Support Ticket</h2>
+          <form onSubmit={handleAddTicket}>
+            <div className="form-grid">
+              <label>
+                Subject
+                <input name="subject" value={newTicket.subject} onChange={handleNewTicketChange} placeholder="Subject" />
+              </label>
+              <label>
+                Customer
+                <input name="customer" value={newTicket.customer} onChange={handleNewTicketChange} placeholder="Customer name" />
+              </label>
+              <label>
+                Phone
+                <input name="phone" value={newTicket.phone} onChange={handleNewTicketChange} placeholder="+91 ..." />
+              </label>
+              <label>
+                Priority
+                <select name="priority" value={newTicket.priority} onChange={handleNewTicketChange}>
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                </select>
+              </label>
+              <label>
+                Channel
+                <select name="channel" value={newTicket.channel} onChange={handleNewTicketChange}>
+                  <option value="Email">Email</option>
+                  <option value="Phone">Phone</option>
+                  <option value="Chat">Chat</option>
+                </select>
+              </label>
+              <label className="full-width">
+                Message
+                <textarea name="message" value={newTicket.message} onChange={handleNewTicketChange} placeholder="Describe the issue" />
+              </label>
+            </div>
+            <button type="submit" className="sup-btn primary">Save ticket</button>
+          </form>
+        </section>
+      )}
 
       <main className="sup-main">
         <section className="sup-list">

@@ -81,6 +81,18 @@ export default function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [sortBy, setSortBy] = useState("date-desc");
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newOrder, setNewOrder] = useState({
+    customer: "",
+    phone: "",
+    address: "",
+    date: new Date().toISOString().slice(0, 10),
+    payment: "COD",
+    status: "Pending",
+    itemName: "",
+    itemQty: "1",
+    itemPrice: "0",
+  });
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 6;
 
@@ -141,20 +153,44 @@ export default function OrdersPage() {
     setSelectedOrder(order);
   }
 
-  function addSampleOrder() {
+  function handleToggleAddForm() {
+    setShowAddForm((current) => !current);
+  }
+
+  function handleNewOrderChange(event) {
+    const { name, value } = event.target;
+    setNewOrder((prev) => ({ ...prev, [name]: value }));
+  }
+
+  function handleAddOrder(event) {
+    event.preventDefault();
     const id = `ORD-${Date.now().toString().slice(-6)}`;
-    const newOrder = {
+    const qty = Number(newOrder.itemQty) || 1;
+    const price = Number(newOrder.itemPrice) || 0;
+    const nextOrder = {
       id,
-      customer: `New Customer ${id.slice(-4)}`,
-      phone: "+91 90000 00000",
-      address: "New Address",
-      date: new Date().toISOString().slice(0, 10),
-      status: "Pending",
-      items: [{ name: "Sample Item", qty: 1, price: 9.99 }],
-      total: 9.99,
-      payment: "COD",
+      customer: newOrder.customer.trim() || `Customer ${id.slice(-4)}`,
+      phone: newOrder.phone.trim() || "+91 90000 00000",
+      address: newOrder.address.trim() || "Address not available",
+      date: newOrder.date,
+      status: newOrder.status,
+      items: [{ name: newOrder.itemName.trim() || "Item", qty, price }],
+      total: qty * price,
+      payment: newOrder.payment,
     };
-    setOrders((p) => [newOrder, ...p]);
+    setOrders((current) => [nextOrder, ...current]);
+    setNewOrder({
+      customer: "",
+      phone: "",
+      address: "",
+      date: new Date().toISOString().slice(0, 10),
+      payment: "COD",
+      status: "Pending",
+      itemName: "",
+      itemQty: "1",
+      itemPrice: "0",
+    });
+    setShowAddForm(false);
     setPage(1);
   }
 
@@ -203,9 +239,64 @@ export default function OrdersPage() {
             <option value="total-asc">Total Low → High</option>
           </select>
 
-          <button className="ord-btn primary" onClick={addSampleOrder}>+ New Order</button>
+          <button className="ord-btn primary" onClick={handleToggleAddForm}>{showAddForm ? "Cancel" : "+ New Order"}</button>
         </div>
       </header>
+
+      {showAddForm && (
+        <section className="ord-add-form">
+          <h2>Add New Order</h2>
+          <form onSubmit={handleAddOrder}>
+            <div className="form-grid">
+              <label>
+                Customer
+                <input name="customer" value={newOrder.customer} onChange={handleNewOrderChange} placeholder="Customer name" />
+              </label>
+              <label>
+                Phone
+                <input name="phone" value={newOrder.phone} onChange={handleNewOrderChange} placeholder="+91 ..." />
+              </label>
+              <label>
+                Address
+                <input name="address" value={newOrder.address} onChange={handleNewOrderChange} placeholder="Shipping address" />
+              </label>
+              <label>
+                Date
+                <input name="date" type="date" value={newOrder.date} onChange={handleNewOrderChange} />
+              </label>
+              <label>
+                Payment
+                <select name="payment" value={newOrder.payment} onChange={handleNewOrderChange}>
+                  <option value="COD">COD</option>
+                  <option value="Prepaid">Prepaid</option>
+                </select>
+              </label>
+              <label>
+                Order item
+                <input name="itemName" value={newOrder.itemName} onChange={handleNewOrderChange} placeholder="Product name" />
+              </label>
+              <label>
+                Qty
+                <input name="itemQty" type="number" min="1" value={newOrder.itemQty} onChange={handleNewOrderChange} />
+              </label>
+              <label>
+                Price
+                <input name="itemPrice" type="number" min="0" step="0.01" value={newOrder.itemPrice} onChange={handleNewOrderChange} />
+              </label>
+              <label>
+                Status
+                <select name="status" value={newOrder.status} onChange={handleNewOrderChange}>
+                  <option value="Pending">Pending</option>
+                  <option value="Processing">Processing</option>
+                  <option value="Shipped">Shipped</option>
+                  <option value="Delivered">Delivered</option>
+                </select>
+              </label>
+            </div>
+            <button type="submit" className="ord-btn primary">Save order</button>
+          </form>
+        </section>
+      )}
 
       <main className="ord-main">
         <section className="ord-list">

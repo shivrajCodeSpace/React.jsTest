@@ -65,6 +65,16 @@ export default function ProductPage() {
   const [viewMode, setViewMode] = useState("grid"); // grid or table
   const [selected, setSelected] = useState(null);
   const [page, setPage] = useState(1);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newProduct, setNewProduct] = useState({
+    name: "",
+    sku: "",
+    category: "Prescription",
+    stock: "",
+    price: "",
+    unit: "",
+    description: "",
+  });
   const PAGE_SIZE = 6;
 
   const filtered = useMemo(() => {
@@ -121,22 +131,44 @@ export default function ProductPage() {
     );
   }
 
-  function handleAddSample() {
+  function handleToggleAddForm() {
+    setShowAddForm((prev) => !prev);
+    setNewProduct({
+      name: "",
+      sku: "",
+      category: "Prescription",
+      stock: "",
+      price: "",
+      unit: "",
+      description: "",
+    });
+  }
+
+  function handleAddProduct(e) {
+    e.preventDefault();
+    const { name, sku, category, stock, price, unit, description } = newProduct;
+    if (!name.trim() || !sku.trim() || !unit.trim() || !stock.trim() || !price.trim()) {
+      return;
+    }
+
     const id = `p${Date.now()}`;
     const newItem = {
       id,
-      name: `New Product ${id.slice(-4)}`,
-      sku: `NEW-${id.slice(-4)}`,
-      category: "OTC",
-      stock: 100,
-      price: 9.99,
-      unit: "unit",
+      name: name.trim(),
+      sku: sku.trim(),
+      category,
+      stock: Number(stock),
+      price: Number(price),
+      unit: unit.trim(),
       image: null,
-      description: "Newly added product.",
+      description: description.trim(),
       growth: 0,
     };
+
     setProducts((p) => [newItem, ...p]);
     setPage(1);
+    setShowAddForm(false);
+    setSelected(newItem);
   }
 
   return (
@@ -208,11 +240,100 @@ export default function ProductPage() {
             </button>
           </div>
 
-          <button className="primary-btn" onClick={handleAddSample}>
-            + Add Product
+          <button className="primary-btn" onClick={handleToggleAddForm}>
+            {showAddForm ? "Cancel" : "+ Add Product"}
           </button>
         </div>
       </header>
+
+      {showAddForm && (
+        <div className="add-product-form">
+          <h3>Add New Product</h3>
+          <form onSubmit={handleAddProduct}>
+            <div className="form-row">
+              <label>
+                Name
+                <input
+                  type="text"
+                  value={newProduct.name}
+                  onChange={(e) => setNewProduct((prev) => ({ ...prev, name: e.target.value }))}
+                  placeholder="Product name"
+                />
+              </label>
+              <label>
+                SKU
+                <input
+                  type="text"
+                  value={newProduct.sku}
+                  onChange={(e) => setNewProduct((prev) => ({ ...prev, sku: e.target.value }))}
+                  placeholder="Product SKU"
+                />
+              </label>
+            </div>
+            <div className="form-row">
+              <label>
+                Category
+                <select
+                  value={newProduct.category}
+                  onChange={(e) => setNewProduct((prev) => ({ ...prev, category: e.target.value }))}
+                >
+                  {CATEGORIES.filter((c) => c !== "All").map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Unit
+                <input
+                  type="text"
+                  value={newProduct.unit}
+                  onChange={(e) => setNewProduct((prev) => ({ ...prev, unit: e.target.value }))}
+                  placeholder="e.g. tablet, box"
+                />
+              </label>
+            </div>
+            <div className="form-row">
+              <label>
+                Price
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={newProduct.price}
+                  onChange={(e) => setNewProduct((prev) => ({ ...prev, price: e.target.value }))}
+                  placeholder="Price"
+                />
+              </label>
+              <label>
+                Stock
+                <input
+                  type="number"
+                  min="0"
+                  value={newProduct.stock}
+                  onChange={(e) => setNewProduct((prev) => ({ ...prev, stock: e.target.value }))}
+                  placeholder="Stock quantity"
+                />
+              </label>
+            </div>
+            <label className="full-width">
+              Description
+              <textarea
+                value={newProduct.description}
+                onChange={(e) => setNewProduct((prev) => ({ ...prev, description: e.target.value }))}
+                placeholder="Product description"
+                rows="3"
+              />
+            </label>
+            <div className="form-actions">
+              <button type="submit" className="primary-btn">
+                Add Product
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
 
       <main className="prod-main">
         <section className="prod-list-area">

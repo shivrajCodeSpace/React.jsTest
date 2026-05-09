@@ -35,6 +35,22 @@ body{margin:0;background:var(--bg);color:var(--text);font-size:14px}
 .icon-btn.active{background:rgba(99,66,255,0.08);box-shadow:0 0 0 3px rgba(99,66,255,0.06)}
 .primary-btn{background:var(--primary-gradient);color:#fff;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:700;box-shadow:0 8px 24px rgba(99,66,255,0.12)}
 
+.add-product-form{background:var(--card);border-radius:16px;padding:22px;box-shadow:0 16px 40px rgba(15,23,42,0.08);border:1px solid #e5e7eb;width:100%;}
+.add-product-form h3{margin:0 0 16px;font-size:20px;font-weight:800;color:#111827}
+.add-product-form form{display:flex;flex-direction:column;gap:18px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.add-product-form label{display:flex;flex-direction:column;gap:8px;font-size:14px;color:#475569}
+.add-product-form input,
+.add-product-form textarea,
+.add-product-form select{width:100%;padding:14px 14px;border-radius:14px;border:1px solid #d1d5db;background:#fafbfc;font-size:14px;outline:none;transition:border-color 0.2s ease, background 0.2s ease}
+.add-product-form input:focus,
+.add-product-form textarea:focus,
+.add-product-form select:focus{border-color:#7c3aed;background:#fff;box-shadow:0 0 0 3px rgba(99,66,255,0.07)}
+.add-product-form textarea{min-height:100px;resize:vertical}
+.full-width{grid-column:1 / -1}
+.form-actions{display:flex;justify-content:flex-end;padding-top:6px;border-top:1px solid #f1f5f9;margin-top:4px}
+.add-product-form .primary-btn{padding:12px 22px;}
+
 /* Main area layout */
 .prod-main{display:grid;grid-template-columns:1fr 320px;gap:18px;margin-top:6px}
 
@@ -105,4 +121,5 @@ body{margin:0;background:var(--bg);color:var(--text);font-size:14px}
   .search-wrap{min-width:160px}
   .prod-logo{width:40px;height:40px}
   .prod-logo img{width:28px;height:28px}
+  .form-row{grid-template-columns:1fr}
 }

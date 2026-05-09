@@ -32,6 +32,21 @@ body{margin:0;background:var(--bg);color:var(--text);font-size:14px}
 .pat-btn.primary{background:var(--primary-gradient);color:#fff;border:none;box-shadow:0 8px 24px rgba(99,66,255,0.12);font-weight:700}
 .pat-btn.ghost{background:transparent;border:1px dashed #e6eef8}
 
+.pat-add-form{background:var(--card);border-radius:16px;padding:22px;box-shadow:0 16px 40px rgba(15,23,42,0.08);border:1px solid #e5e7eb;width:100%}
+.pat-add-form h2{margin:0 0 16px;font-size:20px;font-weight:800;color:#111827}
+.pat-add-form form{display:flex;flex-direction:column;gap:18px}
+.pat-add-form .form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.pat-add-form label{display:flex;flex-direction:column;gap:8px;font-size:14px;color:#475569}
+.pat-add-form input,
+.pat-add-form select,
+.pat-add-form textarea{width:100%;padding:14px 14px;border-radius:14px;border:1px solid #d1d5db;background:#fafbfc;font-size:14px;outline:none;transition:border-color 0.2s ease, background 0.2s ease}
+.pat-add-form input:focus,
+.pat-add-form textarea:focus,
+.pat-add-form select:focus{border-color:#7c3aed;background:#fff;box-shadow:0 0 0 3px rgba(99,66,255,0.07)}
+.pat-add-form textarea{min-height:100px;resize:vertical}
+.pat-add-form .full-width{grid-column:1 / -1}
+.pat-add-form button{padding:12px 22px;align-self:flex-start}
+
 /* Main layout */
 .pat-main{display:grid;grid-template-columns:1fr 320px;gap:16px;margin-top:6px}
 
@@ -76,6 +91,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-size:14px}
   .pat-search{min-width:140px}
   .pat-logo{width:40px;height:40px}
   .pat-logo img{width:28px;height:28px}
+  .pat-add-form .form-grid{grid-template-columns:1fr}
 }
 
 /* Focus states */

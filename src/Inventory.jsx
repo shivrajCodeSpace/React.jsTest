@@ -22,6 +22,16 @@ export default function InventoryPage() {
   const [sortBy, setSortBy] = useState("name-asc");
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [page, setPage] = useState(1);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newItem, setNewItem] = useState({
+    name: "",
+    sku: "",
+    category: "Prescription",
+    stock: "",
+    reorderPoint: "",
+    price: "",
+    unit: "",
+  });
   const PAGE_SIZE = 8;
 
   const filtered = useMemo(() => {
@@ -101,19 +111,39 @@ export default function InventoryPage() {
     setItems((prev) => prev.map((it) => (it.id === id ? { ...it, flagged: true } : it)));
   }
 
-  function addSampleItem() {
+  function handleToggleAddForm() {
+    setShowAddForm((current) => !current);
+  }
+
+  function handleNewItemChange(event) {
+    const { name, value } = event.target;
+    setNewItem((prev) => ({ ...prev, [name]: value }));
+  }
+
+  function handleAddItem(event) {
+    event.preventDefault();
     const id = `i${Date.now()}`;
-    const newItem = {
+    const newInventoryItem = {
       id,
-      name: `New Item ${id.slice(-4)}`,
-      sku: `NEW-${id.slice(-4)}`,
-      category: "OTC",
-      stock: 100,
-      reorderPoint: 20,
-      price: 9.99,
-      unit: "unit",
+      name: newItem.name.trim() || `Item ${id.slice(-4)}`,
+      sku: newItem.sku.trim() || `SKU-${id.slice(-4)}`,
+      category: newItem.category,
+      stock: Number(newItem.stock) || 0,
+      reorderPoint: Number(newItem.reorderPoint) || 5,
+      price: Number(newItem.price) || 0,
+      unit: newItem.unit.trim() || "pcs",
     };
-    setItems((p) => [newItem, ...p]);
+    setItems((current) => [newInventoryItem, ...current]);
+    setNewItem({
+      name: "",
+      sku: "",
+      category: "Prescription",
+      stock: "",
+      reorderPoint: "",
+      price: "",
+      unit: "",
+    });
+    setShowAddForm(false);
     setPage(1);
   }
 
@@ -164,9 +194,54 @@ export default function InventoryPage() {
             <option value="reorder-asc">Reorder Low → High</option>
           </select>
 
-          <button className="inv-btn primary" onClick={addSampleItem}>+ Add Item</button>
+          <button className="inv-btn primary" onClick={handleToggleAddForm}>
+            {showAddForm ? "Cancel" : "+ Add Item"}
+          </button>
         </div>
       </header>
+
+      {showAddForm && (
+        <section className="inv-add-form">
+          <h2>Add Inventory Item</h2>
+          <form onSubmit={handleAddItem}>
+            <div className="form-grid">
+              <label>
+                Product name
+                <input name="name" value={newItem.name} onChange={handleNewItemChange} placeholder="e.g. Vitamin C" />
+              </label>
+              <label>
+                SKU
+                <input name="sku" value={newItem.sku} onChange={handleNewItemChange} placeholder="e.g. VIT-C-500" />
+              </label>
+              <label>
+                Category
+                <select name="category" value={newItem.category} onChange={handleNewItemChange}>
+                  <option value="Prescription">Prescription</option>
+                  <option value="OTC">OTC</option>
+                  <option value="Personal Care">Personal Care</option>
+                </select>
+              </label>
+              <label>
+                Stock
+                <input name="stock" type="number" min="0" value={newItem.stock} onChange={handleNewItemChange} placeholder="0" />
+              </label>
+              <label>
+                Reorder point
+                <input name="reorderPoint" type="number" min="0" value={newItem.reorderPoint} onChange={handleNewItemChange} placeholder="5" />
+              </label>
+              <label>
+                Unit
+                <input name="unit" value={newItem.unit} onChange={handleNewItemChange} placeholder="tablet" />
+              </label>
+              <label>
+                Price
+                <input name="price" type="number" min="0" step="0.01" value={newItem.price} onChange={handleNewItemChange} placeholder="0.00" />
+              </label>
+            </div>
+            <button type="submit" className="inv-btn primary">Save item</button>
+          </form>
+        </section>
+      )}
 
       <section className="inv-actions">
         <div className="inv-selection-info">

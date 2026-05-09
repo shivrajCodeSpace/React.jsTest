@@ -15,6 +15,17 @@ export default function PatientsPage() {
   const [patients, setPatients] = useState(SAMPLE_PATIENTS);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newPatient, setNewPatient] = useState({
+    name: "",
+    age: "",
+    gender: "Female",
+    phone: "",
+    email: "",
+    prescriptions: "0",
+    lastVisit: new Date().toISOString().slice(0, 10),
+    notes: "",
+  });
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 6;
 
@@ -36,20 +47,41 @@ export default function PatientsPage() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const pageItems = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  function addPatientSample() {
+  function handleToggleAddForm() {
+    setShowAddForm((current) => !current);
+  }
+
+  function handleNewPatientChange(event) {
+    const { name, value } = event.target;
+    setNewPatient((prev) => ({ ...prev, [name]: value }));
+  }
+
+  function handleAddPatient(event) {
+    event.preventDefault();
     const id = `PAT-${Date.now().toString().slice(-3)}`;
-    const newPatient = {
+    const patient = {
       id,
-      name: `New Patient ${id}`,
-      age: 30,
-      gender: "Male",
-      phone: "+91 90000 00000",
-      email: "new@example.com",
-      prescriptions: 0,
-      lastVisit: new Date().toISOString().slice(0, 10),
-      notes: "Newly registered patient",
+      name: newPatient.name.trim() || `Patient ${id.slice(-3)}`,
+      age: Number(newPatient.age) || 0,
+      gender: newPatient.gender,
+      phone: newPatient.phone.trim() || "+91 90000 00000",
+      email: newPatient.email.trim() || "patient@example.com",
+      prescriptions: Number(newPatient.prescriptions) || 0,
+      lastVisit: newPatient.lastVisit,
+      notes: newPatient.notes.trim() || "New patient record",
     };
-    setPatients((p) => [newPatient, ...p]);
+    setPatients((current) => [patient, ...current]);
+    setNewPatient({
+      name: "",
+      age: "",
+      gender: "Female",
+      phone: "",
+      email: "",
+      prescriptions: "0",
+      lastVisit: new Date().toISOString().slice(0, 10),
+      notes: "",
+    });
+    setShowAddForm(false);
     setPage(1);
   }
 
@@ -74,9 +106,56 @@ export default function PatientsPage() {
             }}
             aria-label="Search patients"
           />
-          <button className="pat-btn primary" onClick={addPatientSample}>+ New Patient</button>
+          <button className="pat-btn primary" onClick={handleToggleAddForm}>{showAddForm ? "Cancel" : "+ New Patient"}</button>
         </div>
       </header>
+
+      {showAddForm && (
+        <section className="pat-add-form">
+          <h2>Add Patient</h2>
+          <form onSubmit={handleAddPatient}>
+            <div className="form-grid">
+              <label>
+                Name
+                <input name="name" value={newPatient.name} onChange={handleNewPatientChange} placeholder="Patient name" />
+              </label>
+              <label>
+                Age
+                <input name="age" type="number" min="0" value={newPatient.age} onChange={handleNewPatientChange} />
+              </label>
+              <label>
+                Gender
+                <select name="gender" value={newPatient.gender} onChange={handleNewPatientChange}>
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                  <option value="Other">Other</option>
+                </select>
+              </label>
+              <label>
+                Phone
+                <input name="phone" value={newPatient.phone} onChange={handleNewPatientChange} placeholder="+91 ..." />
+              </label>
+              <label>
+                Email
+                <input name="email" type="email" value={newPatient.email} onChange={handleNewPatientChange} placeholder="patient@email.com" />
+              </label>
+              <label>
+                Prescriptions
+                <input name="prescriptions" type="number" min="0" value={newPatient.prescriptions} onChange={handleNewPatientChange} />
+              </label>
+              <label>
+                Last visit
+                <input name="lastVisit" type="date" value={newPatient.lastVisit} onChange={handleNewPatientChange} />
+              </label>
+              <label className="full-width">
+                Notes
+                <textarea name="notes" value={newPatient.notes} onChange={handleNewPatientChange} placeholder="Patient notes" />
+              </label>
+            </div>
+            <button type="submit" className="pat-btn primary">Save patient</button>
+          </form>
+        </section>
+      )}
 
       <main className="pat-main">
         <section className="pat-list">
