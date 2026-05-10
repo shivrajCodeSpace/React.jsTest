@@ -15,6 +15,7 @@ export default function PatientsPage() {
   const [patients, setPatients] = useState(SAMPLE_PATIENTS);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(null);
+  const [editingPatient, setEditingPatient] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newPatient, setNewPatient] = useState({
     name: "",
@@ -49,11 +50,38 @@ export default function PatientsPage() {
 
   function handleToggleAddForm() {
     setShowAddForm((current) => !current);
+    setEditingPatient(null);
   }
 
   function handleNewPatientChange(event) {
     const { name, value } = event.target;
     setNewPatient((prev) => ({ ...prev, [name]: value }));
+  }
+
+  function handleEditClick() {
+    if (selected) {
+      setEditingPatient({ ...selected });
+      setShowAddForm(false);
+    }
+  }
+
+  function handleEditPatientChange(event) {
+    const { name, value } = event.target;
+    setEditingPatient((prev) => ({ ...prev, [name]: value }));
+  }
+
+  function handleSavePatient(event) {
+    event.preventDefault();
+    if (!editingPatient) return;
+    setPatients((current) =>
+      current.map((patient) => (patient.id === editingPatient.id ? { ...editingPatient, age: Number(editingPatient.age) || 0, prescriptions: Number(editingPatient.prescriptions) || 0 } : patient))
+    );
+    setSelected({ ...editingPatient, age: Number(editingPatient.age) || 0, prescriptions: Number(editingPatient.prescriptions) || 0 });
+    setEditingPatient(null);
+  }
+
+  function handleCancelEdit() {
+    setEditingPatient(null);
   }
 
   function handleAddPatient(event) {
@@ -176,7 +204,7 @@ export default function PatientsPage() {
               </thead>
               <tbody>
                 {pageItems.map((p) => (
-                  <tr key={p.id} onClick={() => setSelected(p)}>
+                  <tr key={p.id} onClick={() => { setSelected(p); setEditingPatient(null); }}>
                     <td>{p.id}</td>
                     <td>{p.name}</td>
                     <td>{p.age}</td>
@@ -186,7 +214,7 @@ export default function PatientsPage() {
                     <td>{p.prescriptions}</td>
                     <td>{p.lastVisit}</td>
                     <td>
-                      <button className="small" onClick={() => setSelected(p)}>View</button>
+                      <button className="small" onClick={(e) => { e.stopPropagation(); setSelected(p); setEditingPatient(null); }}>View</button>
                     </td>
                   </tr>
                 ))}
@@ -216,10 +244,57 @@ export default function PatientsPage() {
                 <div className="detail-row"><strong>Prescriptions:</strong> {selected.prescriptions}</div>
                 <div className="detail-row"><strong>Last Visit:</strong> {selected.lastVisit}</div>
                 <div className="detail-row"><strong>Notes:</strong> {selected.notes}</div>
-                <div className="side-actions">
-                  <button className="pat-btn primary">Edit</button>
-                  <button className="pat-btn ghost" onClick={() => setSelected(null)}>Close</button>
-                </div>
+                {editingPatient && editingPatient.id === selected.id ? (
+                  <form onSubmit={handleSavePatient} className="edit-patient-form">
+                    <div className="form-grid">
+                      <label>
+                        Name
+                        <input name="name" value={editingPatient.name} onChange={handleEditPatientChange} />
+                      </label>
+                      <label>
+                        Age
+                        <input name="age" type="number" min="0" value={editingPatient.age} onChange={handleEditPatientChange} />
+                      </label>
+                      <label>
+                        Gender
+                        <select name="gender" value={editingPatient.gender} onChange={handleEditPatientChange}>
+                          <option value="Female">Female</option>
+                          <option value="Male">Male</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </label>
+                      <label>
+                        Phone
+                        <input name="phone" value={editingPatient.phone} onChange={handleEditPatientChange} />
+                      </label>
+                      <label>
+                        Email
+                        <input name="email" type="email" value={editingPatient.email} onChange={handleEditPatientChange} />
+                      </label>
+                      <label>
+                        Prescriptions
+                        <input name="prescriptions" type="number" min="0" value={editingPatient.prescriptions} onChange={handleEditPatientChange} />
+                      </label>
+                      <label>
+                        Last visit
+                        <input name="lastVisit" type="date" value={editingPatient.lastVisit} onChange={handleEditPatientChange} />
+                      </label>
+                      <label className="full-width">
+                        Notes
+                        <textarea name="notes" value={editingPatient.notes} onChange={handleEditPatientChange} />
+                      </label>
+                    </div>
+                    <div className="side-actions">
+                      <button type="submit" className="pat-btn primary">Save changes</button>
+                      <button type="button" className="pat-btn ghost" onClick={handleCancelEdit}>Cancel</button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="side-actions">
+                    <button className="pat-btn primary" onClick={handleEditClick}>Edit</button>
+                    <button className="pat-btn ghost" onClick={() => setSelected(null)}>Close</button>
+                  </div>
+                )}
               </>
             ) : (
               <div className="empty">Select a patient to view details.</div>

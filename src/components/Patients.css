@@ -47,6 +47,20 @@ body{margin:0;background:var(--bg);color:var(--text);font-size:14px}
 .pat-add-form .full-width{grid-column:1 / -1}
 .pat-add-form button{padding:12px 22px;align-self:flex-start}
 
+.edit-patient-form{background:var(--card);border-radius:16px;padding:22px;box-shadow:0 16px 40px rgba(15,23,42,0.08);border:1px solid #e5e7eb;width:100%}
+.edit-patient-form form{display:flex;flex-direction:column;gap:18px}
+.edit-patient-form .form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.edit-patient-form label{display:flex;flex-direction:column;gap:8px;font-size:14px;color:#475569}
+.edit-patient-form input,
+.edit-patient-form select,
+.edit-patient-form textarea{width:100%;padding:14px 14px;border-radius:14px;border:1px solid #d1d5db;background:#fafbfc;font-size:14px;outline:none;transition:border-color 0.2s ease, background 0.2s ease}
+.edit-patient-form input:focus,
+.edit-patient-form textarea:focus,
+.edit-patient-form select:focus{border-color:#7c3aed;background:#fff;box-shadow:0 0 0 3px rgba(99,66,255,0.07)}
+.edit-patient-form textarea{min-height:100px;resize:vertical}
+.edit-patient-form .full-width{grid-column:1 / -1}
+.edit-patient-form button{padding:12px 22px;align-self:flex-start}
+
 /* Main layout */
 .pat-main{display:grid;grid-template-columns:1fr 320px;gap:16px;margin-top:6px}
 
