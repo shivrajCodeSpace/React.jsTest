@@ -1,6 +1,6 @@
 // Inventory.jsx
 import React, { useMemo, useState } from "react";
-import Logo from "./assets/logo.png"; // replace with your logo path if needed
+import Logo from "../assets/logo.png"; // replace with your logo path if needed
 import "./inventory.css";
 
 const SAMPLE_INVENTORY = [

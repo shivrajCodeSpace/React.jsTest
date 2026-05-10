@@ -1,5 +1,5 @@
 import "./ProductInfo.css";
-import BrandHeader from "./components/BrandHeader";
+import BrandHeader from "./BrandHeader";
 
 export default function ProductInfoPage({ onNavigate }) {
   return (

@@ -1,5 +1,5 @@
 import "./Blog.css";
-import BrandHeader from "./components/BrandHeader";
+import BrandHeader from "./BrandHeader";
 
 export default function BlogPage({ onNavigate }) {
   const blogPosts = [

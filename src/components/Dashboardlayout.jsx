@@ -1,6 +1,6 @@
 // DashboardLayout.jsx
 import React, { useState } from "react";
-import Logo from "./assets/logo.png"; // replace with your logo path
+import Logo from "../assets/logo.png"; // replace with your logo path
 import "./dashboard.css";
 export default function DashboardLayout({ children, activeMenu = "Dashboard", onNavigate, onlineStatus = true, displayName = "Pritam Biswas" }) {
   const [dashboardSearch, setDashboardSearch] = useState("");

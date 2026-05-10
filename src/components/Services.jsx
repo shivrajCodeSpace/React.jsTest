@@ -1,5 +1,5 @@
 import "./Services.css";
-import BrandHeader from "./components/BrandHeader";
+import BrandHeader from "./BrandHeader";
 
 export default function ServicesPage({ onNavigate }) {
   return (

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import "./Auth.css";
 import { FaUser, FaLock, FaGoogle } from "react-icons/fa";
-import web_login from "./assets/web_login.png";
-import BrandHeader from "./components/BrandHeader";
+import web_login from "../assets/web_login.png";
+import BrandHeader from "./BrandHeader";
 
 export default function AuthPage({ onNavigate }) {
     const [isLogin, setIsLogin] = useState(true);

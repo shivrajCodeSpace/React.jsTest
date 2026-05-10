@@ -1,19 +1,19 @@
 // App.jsx
 import React, { useState } from "react";
-import SplashScreen from "./Splash";
-import AuthPage from "./AuthPage";
-import DashboardLayout from "./DashboardLayout";
-import Dashboard from "./Dashboard";
-import ProductPage from "./Product";
-import InventoryPage from "./Inventory";
-import OrdersPage from "./Order";
-import SupportPage from "./Support";
-import ProfilePage from "./Profile";
-import PatientsPage from "./Patients";
-import AboutPage from "./About";
-import ServicesPage from "./Services";
-import ProductInfoPage from "./ProductInfo";
-import BlogPage from "./Blog";
+import SplashScreen from "./components/Splash";
+import AuthPage from "./components/AuthPage";
+import DashboardLayout from "./components/DashboardLayout";
+import Dashboard from "./components/Dashboard";
+import ProductPage from "./components/Product";
+import InventoryPage from "./components/Inventory";
+import OrdersPage from "./components/Order";
+import SupportPage from "./components/Support";
+import ProfilePage from "./components/Profile";
+import PatientsPage from "./components/Patients";
+import AboutPage from "./components/About";
+import ServicesPage from "./components/Services";
+import ProductInfoPage from "./components/ProductInfo";
+import BlogPage from "./components/Blog";
 
 export default function App() {
   const [page, setPage] = useState("Splash");

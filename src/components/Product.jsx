@@ -1,6 +1,6 @@
 // Product.jsx
 import React, { useMemo, useState } from "react";
-import Logo from "./assets/logo.png"; // replace with your logo path
+import Logo from "../assets/logo.png"; // replace with your logo path
 import "./product.css";
 
 const SAMPLE_PRODUCTS = [

@@ -1,8 +1,8 @@
 import "./Splash.css";
-import web_login from "./assets/web_login.png";
-import BrandHeader from "./components/BrandHeader";
+import web_login from "../assets/web_login.png";
+import BrandHeader from "./BrandHeader";
 import "./Dashboard.css"
-import website_01 from "./assets/website_01.svg";
+import website_01 from "../assets/website_01.svg";
 export default function SplashScreen({ onNavigate }) {
 
   return (

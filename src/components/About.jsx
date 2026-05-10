@@ -1,5 +1,5 @@
 import "./About.css";
-import BrandHeader from "./components/BrandHeader";
+import BrandHeader from "./BrandHeader";
 
 export default function AboutPage({ onNavigate }) {
   return (
