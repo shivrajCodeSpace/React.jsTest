@@ -1,5 +1,5 @@
 // Dashboard.jsx
-import React from "react";
+import React, { useState } from "react";
 import "./dashboard.css";
 
 const stats = [
@@ -24,6 +24,11 @@ const topProducts = [
   { name: "Digital Thermometer", stock: 5232, price: "₹87.9", sales: 1923, earnings: "₹169,181.7", growth: "+4.3%" },
 ];
 
+const initialEvents = [
+  { id: "E1", title: "May Launch Sale", openDate: "2026-05-02", closeDate: "2026-05-05", status: "Open" },
+  { id: "E2", title: "Inventory Audit", openDate: "2026-05-12", closeDate: "2026-05-14", status: "Upcoming" },
+];
+
 export default function Dashboard() {
   const maxRevenue = Math.max(...revenueData.map(d => d.value));
   const minRevenue = Math.min(...revenueData.map(d => d.value));
@@ -44,6 +49,45 @@ export default function Dashboard() {
   });
 
   const linePath = chartPoints.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ");
+  const [hoveredPointIndex, setHoveredPointIndex] = useState(null);
+  const hoveredPoint = hoveredPointIndex !== null ? chartPoints[hoveredPointIndex] : null;
+  const tooltipTop = hoveredPoint ? Math.max(0, hoveredPoint.y - 44) : 0;
+  const tooltipLeft = hoveredPoint ? `${Math.min(100, (hoveredPoint.x / chartWidth) * 100)}%` : "0%";
+
+  const [events, setEvents] = useState(initialEvents);
+  const [eventForm, setEventForm] = useState({ id: null, title: "", openDate: "", closeDate: "", status: "Open" });
+  const [editingEventId, setEditingEventId] = useState(null);
+  const isEditingEvent = Boolean(editingEventId);
+
+  const handleEventChange = (event) => {
+    const { name, value } = event.target;
+    setEventForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditEvent = (eventData) => {
+    setEditingEventId(eventData.id);
+    setEventForm(eventData);
+  };
+
+  const handleCancelEvent = () => {
+    setEditingEventId(null);
+    setEventForm({ id: null, title: "", openDate: "", closeDate: "", status: "Open" });
+  };
+
+  const handleSaveEvent = (event) => {
+    event.preventDefault();
+    if (!eventForm.title || !eventForm.openDate || !eventForm.closeDate) {
+      return;
+    }
+
+    if (isEditingEvent) {
+      setEvents((prev) => prev.map((item) => (item.id === editingEventId ? { ...item, ...eventForm } : item)));
+    } else {
+      setEvents((prev) => [...prev, { ...eventForm, id: `E${Date.now()}` }]);
+    }
+
+    handleCancelEvent();
+  };
 
   const pie = { prescription: 60, otc: 25, personalCare: 15 };
   const calendarMonth = new Date(2026, 4, 1); // May 2026
@@ -52,6 +96,18 @@ export default function Dashboard() {
   const daysInMonth = 31;
   const today = new Date();
   const isCurrentMonth = today.getFullYear() === 2026 && today.getMonth() === 4;
+  const monthKey = `${calendarMonth.getFullYear()}-${String(calendarMonth.getMonth() + 1).padStart(2, "0")}`;
+  const eventMarkers = events.reduce((acc, item) => {
+    [{ date: item.openDate, type: "Open" }, { date: item.closeDate, type: "Close" }].forEach((entry) => {
+      if (entry.date.startsWith(monthKey)) {
+        const day = Number(entry.date.slice(-2));
+        if (day >= 1 && day <= daysInMonth) {
+          acc[day] = [...(acc[day] || []), { ...entry, title: item.title }];
+        }
+      }
+    });
+    return acc;
+  }, {});
 
   return (
     <>
@@ -83,11 +139,24 @@ export default function Dashboard() {
                 <path d={linePath} className="line-path" />
                 {chartPoints.map((point, i) => (
                   <g key={i}>
-                    <circle cx={point.x} cy={point.y} r="5" className="line-point" />
-                    <text x={point.x} y={point.y - 12} className="line-point-label">₹{point.value.toLocaleString()}</text>
+                    <circle
+                      cx={point.x}
+                      cy={point.y}
+                      r="12"
+                      className="line-point-hit"
+                      onMouseEnter={() => setHoveredPointIndex(i)}
+                      onMouseLeave={() => setHoveredPointIndex(null)}
+                    />
+                    <circle cx={point.x} cy={point.y} r="5" className={`line-point ${hoveredPointIndex === i ? "active" : ""}`} />
                   </g>
                 ))}
               </svg>
+              {hoveredPoint && (
+                <div className="chart-tooltip" style={{ left: tooltipLeft, top: `${tooltipTop}px` }}>
+                  <div className="tooltip-label">{hoveredPoint.label}</div>
+                  <div className="tooltip-value">₹{hoveredPoint.value.toLocaleString()}</div>
+                </div>
+              )}
             </div>
             <div className="line-labels">
               {revenueData.map((d, i) => (
@@ -191,16 +260,81 @@ export default function Dashboard() {
                 const isBlank = date < 1 || date > daysInMonth;
                 const isTodayCell = isCurrentMonth && date === today.getDate();
                 const isWeekend = i % 7 === 0 || i % 7 === 6;
+                const markers = eventMarkers[date] || [];
                 return (
                   <div
                     key={i}
                     className={`cal-cell ${isBlank ? "blank" : ""} ${isWeekend ? "weekend" : ""} ${isTodayCell ? "today" : ""}`}
                   >
                     {isBlank ? "" : date}
+                    {!isBlank && markers.length > 0 && (
+                      <div className="calendar-event-dots">
+                        {markers.map((marker, index) => (
+                          <span
+                            key={index}
+                            className={`calendar-event-dot ${marker.type.toLowerCase()}`}
+                            title={`${marker.type}: ${marker.title}`}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 );
               })}
             </div>
+          </div>
+
+          <div className="event-schedule">
+            <div className="event-schedule-header">
+              <div className="event-schedule-title">Event schedule</div>
+              <div className="event-schedule-meta">Manage open/close dates</div>
+            </div>
+            <div className="event-list">
+              {events.map((item) => (
+                <div key={item.id} className="event-item">
+                  <div className="event-meta">
+                    <div className="event-title">{item.title}</div>
+                    <div className="event-dates">{item.openDate} → {item.closeDate}</div>
+                  </div>
+                  <div className="event-actions">
+                    <span className={`event-status event-status-${item.status.toLowerCase()}`}>{item.status}</span>
+                    <button className="event-edit-btn" type="button" onClick={() => handleEditEvent(item)}>Edit</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <form className="event-form" onSubmit={handleSaveEvent}>
+              <div className="form-row">
+                <label>
+                  Event
+                  <input name="title" value={eventForm.title} onChange={handleEventChange} placeholder="Event name" />
+                </label>
+                <label>
+                  Open date
+                  <input name="openDate" type="date" value={eventForm.openDate} onChange={handleEventChange} />
+                </label>
+              </div>
+              <div className="form-row">
+                <label>
+                  Close date
+                  <input name="closeDate" type="date" value={eventForm.closeDate} onChange={handleEventChange} />
+                </label>
+                <label>
+                  Status
+                  <select name="status" value={eventForm.status} onChange={handleEventChange}>
+                    <option>Open</option>
+                    <option>Upcoming</option>
+                    <option>Closed</option>
+                  </select>
+                </label>
+              </div>
+              <div className="event-form-actions">
+                <button className="primary" type="submit">{isEditingEvent ? "Update" : "Add"} event</button>
+                {isEditingEvent && (
+                  <button className="secondary" type="button" onClick={handleCancelEvent}>Cancel</button>
+                )}
+              </div>
+            </form>
           </div>
         </div>
       </section>

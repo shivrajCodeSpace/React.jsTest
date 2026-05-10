@@ -73,6 +73,7 @@ export default function ProductPage() {
     stock: "",
     price: "",
     unit: "",
+    image: null,
     description: "",
   });
   const PAGE_SIZE = 6;
@@ -146,7 +147,7 @@ export default function ProductPage() {
 
   function handleAddProduct(e) {
     e.preventDefault();
-    const { name, sku, category, stock, price, unit, description } = newProduct;
+    const { name, sku, category, stock, price, unit, image, description } = newProduct;
     if (!name.trim() || !sku.trim() || !unit.trim() || !stock.trim() || !price.trim()) {
       return;
     }
@@ -160,7 +161,7 @@ export default function ProductPage() {
       stock: Number(stock),
       price: Number(price),
       unit: unit.trim(),
-      image: null,
+      image: image || null,
       description: description.trim(),
       growth: 0,
     };
@@ -293,6 +294,27 @@ export default function ProductPage() {
                   placeholder="e.g. tablet, box"
                 />
               </label>
+            </div>
+            <div className="form-row">
+              <label>
+                Product Image
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = () => setNewProduct((prev) => ({ ...prev, image: reader.result }));
+                    reader.readAsDataURL(file);
+                  }}
+                />
+              </label>
+              {newProduct.image && (
+                <div className="image-preview">
+                  <img src={newProduct.image} alt="Medicine preview" />
+                </div>
+              )}
             </div>
             <div className="form-row">
               <label>

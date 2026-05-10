@@ -2,6 +2,7 @@ import "./Splash.css";
 import web_login from "./assets/web_login.png";
 import BrandHeader from "./components/BrandHeader";
 import "./Dashboard.css"
+import website_01 from "./assets/website_01.svg";
 export default function SplashScreen({ onNavigate }) {
 
   return (
@@ -46,7 +47,7 @@ export default function SplashScreen({ onNavigate }) {
 
         {/* Right Image */}
         <div className="hero-right">
-          <img src={web_login} alt="dashboard" />
+          <img src={website_01} alt="dashboard" />
         </div>
 
       </div>

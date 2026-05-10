@@ -27,12 +27,15 @@ body {
 /* Layout root */
 .dm-root {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* Sidebar */
 .dm-sidebar {
   width: 240px; /* slightly wider to fit bigger logo */
+  flex: 0 0 240px;
+  overflow: hidden;
   /* background: linear-gradient(180deg,#0f172a,#111827); */
   color: #fff;
   padding: 24px 16px;
@@ -120,12 +123,14 @@ body {
 
 /* Main content */
 .dm-main {
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 18px;
   background-color:  #e5e5e5;
+  overflow-y: auto;
 }
 
 /* Header */
@@ -445,6 +450,144 @@ body {
   transform: translateY(-1px);
   background: #eff6ff;
 }
+.calendar-event-dots {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 6px;
+}
+.calendar-event-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.calendar-event-dot.open {
+  background: #22c55e;
+}
+.calendar-event-dot.close {
+  background: #f59e0b;
+}
+.event-schedule {
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
+.event-schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.event-schedule-title {
+  font-weight: 700;
+  font-size: 14px;
+}
+.event-schedule-meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+.event-list {
+  display: grid;
+  gap: 10px;
+}
+.event-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+.event-meta {
+  display: grid;
+  gap: 4px;
+}
+.event-title {
+  font-size: 13px;
+  font-weight: 700;
+}
+.event-dates {
+  font-size: 12px;
+  color: var(--muted);
+}
+.event-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.event-status {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(30, 64, 175, 0.1);
+  color: #1e3a8a;
+}
+.event-status-closed {
+  background: rgba(239, 68, 68, 0.1);
+  color: #b91c1c;
+}
+.event-status-upcoming {
+  background: rgba(234, 179, 8, 0.12);
+  color: #b45309;
+}
+.event-edit-btn {
+  border: none;
+  background: transparent;
+  color: var(--primary);
+  font-size: 12px;
+  cursor: pointer;
+}
+.event-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+.event-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.event-form input,
+.event-form select {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #fff;
+  color: var(--text);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.event-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.event-form button {
+  border: none;
+  border-radius: 14px;
+  padding: 11px 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.event-form button.primary {
+  background: linear-gradient(90deg, #1f85de 0%, #6b46d5 100%);
+  color: #fff;
+}
+.event-form button.secondary {
+  background: #f3f4f6;
+  color: var(--text);
+}
 
 /* Revenue chart */
 .dm-revenue {
@@ -461,6 +604,7 @@ body {
   width: 100%;
 }
 .line-chart-wrapper {
+  position: relative;
   background: var(--glass);
   border-radius: 16px;
   padding: 16px;
@@ -481,11 +625,43 @@ body {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+.line-point-hit {
+  fill: transparent;
+  cursor: pointer;
+}
 .line-point {
   fill: #fff;
-  stroke: var(--primary);
+  stroke: #1f85de;
   stroke-width: 4;
   filter: drop-shadow(0 6px 12px rgba(31, 133, 222, 0.18));
+  transition: transform 0.15s ease, stroke 0.15s ease;
+}
+.line-point.active {
+  transform: scale(1.3);
+  stroke: #2563eb;
+}
+.chart-tooltip {
+  position: absolute;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.95);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  white-space: nowrap;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  z-index: 2;
+}
+.chart-tooltip::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid rgba(15, 23, 42, 0.95);
 }
 .line-point-label {
   fill: var(--text);

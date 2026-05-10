@@ -199,6 +199,7 @@ export default function DashboardLayout({ children, activeMenu = "Dashboard", on
               type="button"
               className="dm-avatar"
               aria-label={`Open profile (${onlineStatus ? "online" : "offline"})`}
+              onClick={() => onNavigate && onNavigate("Profile")}
             >
               {initials || "PB"}
               <span className={`dm-avatar-status ${onlineStatus ? "online" : "offline"}`} />
