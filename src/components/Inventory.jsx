@@ -3,7 +3,7 @@ import React, { useMemo, useState } from "react";
 import Logo from "../assets/logo.png"; // replace with your logo path if needed
 import "./inventory.css";
 
-const SAMPLE_INVENTORY = [
+export const SAMPLE_INVENTORY = [
   { id: "i1", name: "Paracetamol 650mg", sku: "PARA-650", category: "Prescription", stock: 1023, reorderPoint: 200, price: 3.2, unit: "tablet" },
   { id: "i2", name: "Amoxicillin 500mg", sku: "AMOX-500", category: "Prescription", stock: 1203, reorderPoint: 150, price: 7.3, unit: "capsule" },
   { id: "i3", name: "Disposable Gloves Box", sku: "GLOV-BOX", category: "Personal Care", stock: 1032, reorderPoint: 100, price: 12.3, unit: "box" },
@@ -15,8 +15,10 @@ const SAMPLE_INVENTORY = [
 
 const CATEGORIES = ["All", "Prescription", "OTC", "Personal Care"];
 
-export default function InventoryPage() {
-  const [items, setItems] = useState(SAMPLE_INVENTORY);
+export default function InventoryPage({ inventoryItems, setInventoryItems, onNavigate }) {
+  const [localItems, setLocalItems] = useState(SAMPLE_INVENTORY);
+  const items = inventoryItems ?? localItems;
+  const setItems = setInventoryItems ?? setLocalItems;
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [sortBy, setSortBy] = useState("name-asc");
@@ -33,6 +35,11 @@ export default function InventoryPage() {
     unit: "",
   });
   const PAGE_SIZE = 8;
+
+  const lowStockItems = useMemo(
+    () => items.filter((item) => item.stock <= item.reorderPoint),
+    [items]
+  );
 
   const filtered = useMemo(() => {
     let list = items.slice();
@@ -323,7 +330,7 @@ export default function InventoryPage() {
               </div>
               <div>
                 <div className="summary-label">Low Stock</div>
-                <div className="summary-value">{items.filter((i) => i.stock <= i.reorderPoint).length}</div>
+                <div className="summary-value">{lowStockItems.length}</div>
               </div>
               <div>
                 <div className="summary-label">Total Units</div>

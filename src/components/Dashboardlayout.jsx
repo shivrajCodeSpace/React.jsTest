@@ -2,8 +2,9 @@
 import React, { useState } from "react";
 import Logo from "../assets/logo.png"; // replace with your logo path
 import "./dashboard.css";
-export default function DashboardLayout({ children, activeMenu = "Dashboard", onNavigate, onlineStatus = true, displayName = "Pritam Biswas" }) {
+export default function DashboardLayout({ children, activeMenu = "Dashboard", onNavigate, onlineStatus = true, displayName = "Pritam Biswas", lowStockCount = 0, onAlertClick }) {
   const [dashboardSearch, setDashboardSearch] = useState("");
+  const [showNotifications, setShowNotifications] = useState(false);
   const initials = displayName
     .split(" ")
     .filter(Boolean)
@@ -188,13 +189,48 @@ export default function DashboardLayout({ children, activeMenu = "Dashboard", on
                 aria-label="Search dashboard"
               />
             </div>
-            <button type="button" className="dm-notification-btn" aria-label="Show notifications">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8" />
-                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-              </svg>
-              <span className="dm-badge">3</span>
-            </button>
+            <div className="dm-notification-wrapper">
+              <button
+                type="button"
+                className={`dm-notification-btn${lowStockCount > 0 ? " has-alert" : ""}`}
+                aria-label={lowStockCount > 0 ? `${lowStockCount} low stock alerts` : "No low stock alerts"}
+                onClick={() => setShowNotifications((current) => !current)}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8" />
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+                {lowStockCount > 0 && <span className="dm-badge">{lowStockCount}</span>}
+              </button>
+
+              {showNotifications && (
+                <div className="dm-notification-panel" role="region" aria-label="Notifications">
+                  <div className="dm-notification-panel-header">
+                    <span>Notifications</span>
+                  </div>
+                  <div className="dm-notification-list">
+                    {lowStockCount > 0 ? (
+                      <button
+                        type="button"
+                        className="dm-notification-item dm-notification-item-alert"
+                        onClick={() => {
+                          setShowNotifications(false);
+                          onAlertClick ? onAlertClick() : onNavigate && onNavigate("Inventory");
+                        }}
+                      >
+                        <div>
+                          <div className="notification-title">{lowStockCount} low stock item{lowStockCount > 1 ? "s" : ""}</div>
+                          <div className="notification-subtitle">Tap to review inventory and reorder.</div>
+                        </div>
+                        <span className="notification-time">Now</span>
+                      </button>
+                    ) : (
+                      <div className="dm-notification-empty">No new notifications.</div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
             <button
               type="button"
               className="dm-avatar"

@@ -5,7 +5,7 @@ import AuthPage from "./components/AuthPage";
 import DashboardLayout from "./components/DashboardLayout";
 import Dashboard from "./components/Dashboard";
 import ProductPage from "./components/Product";
-import InventoryPage from "./components/Inventory";
+import InventoryPage, { SAMPLE_INVENTORY } from "./components/Inventory";
 import OrdersPage from "./components/Order";
 import SupportPage from "./components/Support";
 import ProfilePage from "./components/Profile";
@@ -19,6 +19,9 @@ export default function App() {
   const [page, setPage] = useState("Splash");
   const [onlineStatus, setOnlineStatus] = useState(true);
   const [displayName, setDisplayName] = useState("Pritam Biswas");
+  const [inventoryItems, setInventoryItems] = useState(SAMPLE_INVENTORY);
+  const lowStockItems = inventoryItems.filter((item) => item.stock <= item.reorderPoint);
+  const lowStockCount = lowStockItems.length;
 
   if (page === "Splash") {
     return <SplashScreen onNavigate={setPage} />;
@@ -45,10 +48,25 @@ export default function App() {
   }
   // const [page, setPage] = useState("Dashboard");
   return (
-    <DashboardLayout activeMenu={page} onNavigate={setPage} onlineStatus={onlineStatus} displayName={displayName}>
-      {page === "Dashboard" && <Dashboard />}
+    <DashboardLayout
+      activeMenu={page}
+      onNavigate={setPage}
+      onlineStatus={onlineStatus}
+      displayName={displayName}
+      lowStockCount={lowStockCount}
+      onAlertClick={() => setPage("Inventory")}
+    >
+      {page === "Dashboard" && (
+        <Dashboard lowStockCount={lowStockCount} onAlertClick={() => setPage("Inventory")} />
+      )}
       {page === "Product" && <ProductPage />}
-      {page === "Inventory" && <InventoryPage />}
+      {page === "Inventory" && (
+        <InventoryPage
+          inventoryItems={inventoryItems}
+          setInventoryItems={setInventoryItems}
+          onNavigate={setPage}
+        />
+      )}
       {page === "Orders" && <OrdersPage />}
       {page === "Support" && <SupportPage />}
       {page === "Patients" && <PatientsPage />}

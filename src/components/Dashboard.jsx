@@ -29,7 +29,7 @@ const initialEvents = [
   { id: "E2", title: "Inventory Audit", openDate: "2026-05-12", closeDate: "2026-05-14", status: "Upcoming" },
 ];
 
-export default function Dashboard() {
+export default function Dashboard({ lowStockCount = 0, onAlertClick }) {
   const maxRevenue = Math.max(...revenueData.map(d => d.value));
   const minRevenue = Math.min(...revenueData.map(d => d.value));
   const averageRevenue = Math.round(revenueData.reduce((sum, d) => sum + d.value, 0) / revenueData.length);
@@ -74,6 +74,13 @@ export default function Dashboard() {
     setEventForm({ id: null, title: "", openDate: "", closeDate: "", status: "Open" });
   };
 
+  const handleDeleteEvent = (eventId) => {
+    setEvents((prev) => prev.filter((item) => item.id !== eventId));
+    if (eventId === editingEventId) {
+      handleCancelEvent();
+    }
+  };
+
   const handleSaveEvent = (event) => {
     event.preventDefault();
     if (!eventForm.title || !eventForm.openDate || !eventForm.closeDate) {
@@ -111,6 +118,15 @@ export default function Dashboard() {
 
   return (
     <>
+      {lowStockCount > 0 && (
+        <div className="dm-lowstock-popup" role="status">
+          <div>
+            <div className="lowstock-title">{lowStockCount} low-stock item{lowStockCount > 1 ? "s" : ""}</div>
+            <div className="lowstock-message">Review inventory now to prevent stockouts.</div>
+          </div>
+          <button type="button" className="lowstock-action" onClick={onAlertClick}>Go to inventory</button>
+        </div>
+      )}
       <section className="dm-stats">
         {stats.map((s, i) => (
           <div key={i} className="dm-card">
@@ -299,6 +315,7 @@ export default function Dashboard() {
                   <div className="event-actions">
                     <span className={`event-status event-status-${item.status.toLowerCase()}`}>{item.status}</span>
                     <button className="event-edit-btn" type="button" onClick={() => handleEditEvent(item)}>Edit</button>
+                    <button className="event-delete-btn" type="button" onClick={() => handleDeleteEvent(item.id)}>Delete</button>
                   </div>
                 </div>
               ))}
@@ -331,7 +348,10 @@ export default function Dashboard() {
               <div className="event-form-actions">
                 <button className="primary" type="submit">{isEditingEvent ? "Update" : "Add"} event</button>
                 {isEditingEvent && (
-                  <button className="secondary" type="button" onClick={handleCancelEvent}>Cancel</button>
+                  <>
+                    <button className="secondary" type="button" onClick={handleCancelEvent}>Cancel</button>
+                    <button className="event-delete-btn" type="button" onClick={() => handleDeleteEvent(editingEventId)}>Delete</button>
+                  </>
                 )}
               </div>
             </form>
