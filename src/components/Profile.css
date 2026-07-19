@@ -463,6 +463,35 @@ body { margin: 0; background: transparent; color: var(--text); font-size: 14px; 
   font-size: 0.95rem;
 }
 
+.password-field .password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 46px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  font-size: 1rem;
+}
+
+.password-toggle:hover {
+  color: #374151;
+}
+
 .field textarea {
   min-height: 120px;
   resize: vertical;

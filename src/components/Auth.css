@@ -95,6 +95,26 @@
   color: #9ca3af;
 }
 
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.password-toggle:hover {
+  color: #4f46e5;
+}
+
 .input-group input {
   width: 100%;
   padding: 16px 16px 16px 48px;

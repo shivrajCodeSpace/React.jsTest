@@ -1,5 +1,6 @@
 // Order.jsx
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { getOrders } from "../api/api";
 // import Logo from "./logo.png"; // replace with your logo path
 import "./order.css";
 
@@ -75,7 +76,7 @@ const SAMPLE_ORDERS = [
 
 const STATUSES = ["All", "Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
 
-export default function OrdersPage() {
+export default function OrdersPage({ onNewOrderReceived }) {
   const [orders, setOrders] = useState(SAMPLE_ORDERS);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -93,8 +94,80 @@ export default function OrdersPage() {
     itemQty: "1",
     itemPrice: "0",
   });
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [apiLoaded, setApiLoaded] = useState(false);
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 6;
+
+  const ordersRef = useRef(orders);
+
+  useEffect(() => {
+    ordersRef.current = orders;
+  }, [orders]);
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchOrdersFromApi = async () => {
+      try {
+        const result = await getOrders();
+        const apiOrders = Array.isArray(result)
+          ? result
+          : result.orders || result.data || result.result || [];
+
+        if (!Array.isArray(apiOrders) || apiOrders.length === 0) {
+          return;
+        }
+
+        if (!mounted) {
+          return;
+        }
+
+        if (!apiLoaded) {
+          setOrders(apiOrders);
+          setApiLoaded(true);
+          return;
+        }
+
+        const existingIds = new Set(ordersRef.current.map((o) => o.id));
+        const newOrders = apiOrders.filter((order) => !existingIds.has(order.id));
+
+        if (newOrders.length > 0) {
+          setOrders((current) => [...newOrders, ...current]);
+          setPage(1);
+
+          const orderNotifications = newOrders.map((order) => ({
+            id: `new-order-${order.id}-${Date.now()}`,
+            title: "New order received",
+            subtitle: `${order.customer || "Customer"} placed ${order.items?.length || 1} item(s).`,
+            time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+            order,
+          }));
+
+          if (onNewOrderReceived) {
+            onNewOrderReceived(orderNotifications);
+          }
+
+          setToastMessage(`${newOrders.length} new order${newOrders.length > 1 ? "s" : ""} received`);
+          setShowToast(true);
+          window.setTimeout(() => {
+            if (mounted) {
+              setShowToast(false);
+            }
+          }, 4500);
+        }
+      } catch (error) {
+        console.error("Order polling error:", error);
+      }
+    };
+
+    fetchOrdersFromApi();
+    const intervalId = window.setInterval(fetchOrdersFromApi, 15000);
+    return () => {
+      mounted = false;
+      window.clearInterval(intervalId);
+    };
+  }, [apiLoaded, onNewOrderReceived]);
 
   const filtered = useMemo(() => {
     let list = orders.slice();
@@ -296,6 +369,15 @@ export default function OrdersPage() {
             <button type="submit" className="ord-btn primary">Save order</button>
           </form>
         </section>
+      )}
+
+      {showToast && (
+        <div className="ord-toast" role="status" aria-live="polite">
+          <div className="ord-toast-inner">
+            <strong>New order received</strong>
+            <span>{toastMessage}</span>
+          </div>
+        </div>
       )}
 
       <main className="ord-main">

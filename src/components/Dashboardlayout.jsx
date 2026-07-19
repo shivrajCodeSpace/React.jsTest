@@ -2,9 +2,10 @@
 import React, { useState } from "react";
 import Logo from "../assets/logo.png"; // replace with your logo path
 import "./dashboard.css";
-export default function DashboardLayout({ children, activeMenu = "Dashboard", onNavigate, onlineStatus = true, displayName = "Pritam Biswas", lowStockCount = 0, onAlertClick }) {
+export default function DashboardLayout({ children, activeMenu = "Dashboard", onNavigate, onlineStatus = true, displayName = "Pritam Biswas", lowStockCount = 0, notifications = [], notificationBadgeCount = 0, onNotificationClick, onAlertClick, onSignOut }) {
   const [dashboardSearch, setDashboardSearch] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
+  const notificationCount = notificationBadgeCount || notifications.length + (lowStockCount > 0 ? 1 : 0);
   const initials = displayName
     .split(" ")
     .filter(Boolean)
@@ -154,6 +155,11 @@ export default function DashboardLayout({ children, activeMenu = "Dashboard", on
             </button>
           ))}
         </nav>
+        <div className="dm-sidebar-footer">
+          <button type="button" className="dm-signout-btn" onClick={() => onSignOut && onSignOut()}>
+            Sign out
+          </button>
+        </div>
       </aside>
 
     <main className="dm-main">
@@ -192,8 +198,8 @@ export default function DashboardLayout({ children, activeMenu = "Dashboard", on
             <div className="dm-notification-wrapper">
               <button
                 type="button"
-                className={`dm-notification-btn${lowStockCount > 0 ? " has-alert" : ""}`}
-                aria-label={lowStockCount > 0 ? `${lowStockCount} low stock alerts` : "No low stock alerts"}
+                className={`dm-notification-btn${notificationCount > 0 ? " has-alert" : ""}`}
+                aria-label={notificationCount > 0 ? `${notificationCount} new notifications` : "No new notifications"}
                 onClick={() => setShowNotifications((current) => !current)}
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -209,7 +215,29 @@ export default function DashboardLayout({ children, activeMenu = "Dashboard", on
                     <span>Notifications</span>
                   </div>
                   <div className="dm-notification-list">
-                    {lowStockCount > 0 ? (
+                    {notifications.length > 0 && notifications.map((notification) => (
+                      <button
+                        key={notification.id}
+                        type="button"
+                        className="dm-notification-item dm-notification-item-order"
+                        onClick={() => {
+                          setShowNotifications(false);
+                          if (onNotificationClick) {
+                            onNotificationClick(notification);
+                          } else {
+                            onNavigate && onNavigate("Orders");
+                          }
+                        }}
+                      >
+                        <div>
+                          <div className="notification-title">{notification.title}</div>
+                          <div className="notification-subtitle">{notification.subtitle}</div>
+                        </div>
+                        <span className="notification-time">{notification.time || "Now"}</span>
+                      </button>
+                    ))}
+
+                    {lowStockCount > 0 && (
                       <button
                         type="button"
                         className="dm-notification-item dm-notification-item-alert"
@@ -224,7 +252,9 @@ export default function DashboardLayout({ children, activeMenu = "Dashboard", on
                         </div>
                         <span className="notification-time">Now</span>
                       </button>
-                    ) : (
+                    )}
+
+                    {notifications.length === 0 && lowStockCount === 0 && (
                       <div className="dm-notification-empty">No new notifications.</div>
                     )}
                   </div>

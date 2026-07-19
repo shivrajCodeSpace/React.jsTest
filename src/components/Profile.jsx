@@ -1,5 +1,6 @@
 // Profile.jsx
 import React, { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 // import Logo from "./logo.png"; // replace with your logo path
 import "./profile.css";
 
@@ -28,6 +29,8 @@ export default function ProfilePage({ onlineStatus = true, setOnlineStatus = () 
   const [editing, setEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("account");
   const [passwords, setPasswords] = useState({ current: "", newPass: "", confirm: "" });
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [notifications, setNotifications] = useState({
     orders: true,
     inventory: true,
@@ -105,10 +108,21 @@ export default function ProfilePage({ onlineStatus = true, setOnlineStatus = () 
   }
 
   function updatePassword() {
+    if (!passwords.current || !passwords.newPass || !passwords.confirm) {
+      alert("Please fill in all password fields.");
+      return;
+    }
+
+    if (passwords.newPass.length < 6 || passwords.newPass.length > 18) {
+      alert("New password must be between 6 and 18 characters.");
+      return;
+    }
+
     if (passwords.newPass !== passwords.confirm) {
       alert("New password and confirmation do not match.");
       return;
     }
+
     // call API to update password
     setPasswords({ current: "", newPass: "", confirm: "" });
     alert("Password updated (demo).");
@@ -432,13 +446,45 @@ export default function ProfilePage({ onlineStatus = true, setOnlineStatus = () 
           <section className="profile-secondary-grid">
             <div className="card mini-card">
               <h4>Security</h4>
-              <div className="field">
+              <div className="field password-field">
                 <label>Current password</label>
-                <input type="password" name="current" value={passwords.current} onChange={handlePasswordChange} placeholder="••••••" />
+                <div className="password-wrapper">
+                  <input
+                    type={showCurrentPassword ? "text" : "password"}
+                    name="current"
+                    value={passwords.current}
+                    onChange={handlePasswordChange}
+                    placeholder="••••••"
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowCurrentPassword((current) => !current)}
+                    aria-label={showCurrentPassword ? "Hide current password" : "Show current password"}
+                  >
+                    {showCurrentPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
               </div>
-              <div className="field">
+              <div className="field password-field">
                 <label>New password</label>
-                <input type="password" name="newPass" value={passwords.newPass} onChange={handlePasswordChange} placeholder="New password" />
+                <div className="password-wrapper">
+                  <input
+                    type={showNewPassword ? "text" : "password"}
+                    name="newPass"
+                    value={passwords.newPass}
+                    onChange={handlePasswordChange}
+                    placeholder="New password"
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowNewPassword((current) => !current)}
+                    aria-label={showNewPassword ? "Hide new password" : "Show new password"}
+                  >
+                    {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
               </div>
               <button className="prof-btn secondary" onClick={updatePassword}>Update Password</button>
             </div>

@@ -41,7 +41,7 @@ export default function SplashScreen({ onNavigate }) {
             <button onClick={() => onNavigate("Auth")} className="login-btn">
               Login
             </button>
-            <span className="register" onClick={() => onNavigate("Auth")}>Register Now ?</span>
+            <span className="register" onClick={() => onNavigate("Auth", { mode: "signup" })}>Register Now ?</span>
           </div>
         </div>
 

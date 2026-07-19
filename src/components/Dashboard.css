@@ -45,6 +45,26 @@ body {
   align-items: flex-start;
   box-shadow: 0 1px 6px rgba(2, 6, 23, 0.06);
 }
+.dm-sidebar-footer {
+  width: 100%;
+  margin-top: auto;
+}
+.dm-signout-btn {
+  width: 100%;
+  padding: 12px 16px;
+  height: auto;
+  border-radius: 14px;
+  background: #eff6ff;
+  color: #0f172a;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.dm-signout-btn:hover {
+  background: #dbeafe;
+  transform: translateY(-1px);
+}
 .dm-brand {
   display: flex;
   align-items: center;
@@ -247,6 +267,22 @@ body {
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   color: var(--text);
 }
+.dm-signout-btn {
+  min-width: 96px;
+  padding: 0 14px;
+  height: 40px;
+  border-radius: 14px;
+  background: #f8fafc;
+  color: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.dm-signout-btn:hover {
+  background: #eef2ff;
+  transform: translateY(-1px);
+}
 .dm-notification-btn {
   position: relative;
 }
@@ -337,6 +373,10 @@ body {
 }
 .dm-notification-item:hover {
   background: #f1f5f9;
+}
+.dm-notification-item-order {
+  border-color: rgba(59, 130, 246, 0.18);
+  background: rgba(219, 234, 254, 0.7);
 }
 .dm-notification-item-alert {
   border-color: rgba(248, 113, 113, 0.18);
